@@ -166,7 +166,7 @@ public class WorldFile{
         }
     }
     
-    func parseWorldFile() throws {
+    public func parseWorldFile() throws {
         try parseFileHeader()
         print("\(self.reader.readIndex)")
         if (self.pointers[0] != self.reader.readIndex)
