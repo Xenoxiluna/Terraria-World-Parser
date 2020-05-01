@@ -3,6 +3,7 @@
 Terraria 1.3.5.3 world parser in the Swift programing language
 
 ## Usage
+This is a swift package. Add as a dependency in your project to use it.
 An example can be found in example.swift
 
 `import TerrariaWorldParser`
