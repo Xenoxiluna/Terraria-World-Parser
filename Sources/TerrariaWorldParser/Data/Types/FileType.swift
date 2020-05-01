@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FileType: UInt8{
+public enum FileType: UInt8{
     case None
     case Map
     case World

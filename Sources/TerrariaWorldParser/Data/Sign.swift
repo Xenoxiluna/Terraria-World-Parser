@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Sign{
+public class Sign{
     var name: String = ""
     var signId: Int = -1
     var text: String = ""

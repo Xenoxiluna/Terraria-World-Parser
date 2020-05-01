@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Item {
+public class Item {
     let MaxStackSize: Int = 999
 
     var stackSize: Int16 = 0

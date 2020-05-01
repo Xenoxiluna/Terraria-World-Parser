@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PressurePlate{
+public class PressurePlate{
     var x: Int32 = 0
     var y: Int32 = 0
 }

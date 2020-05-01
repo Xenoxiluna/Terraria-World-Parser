@@ -8,7 +8,7 @@
 
 import Foundation
 
-class NPC {
+public class NPC {
     var home: SIMD2<Int32> = [0,0]
     var isHomeless: Bool = false
     var name: String = ""

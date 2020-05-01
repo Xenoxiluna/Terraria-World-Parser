@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ParseError: Error{
+public enum ParseError: Error{
     case RLECompressionError
     case RLECompressionOutofBounds
     case BitArrayError

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Tile{
+public struct Tile{
     var IsActive: Bool = false
     var WireRed: Bool = false
     var WireGreen: Bool = false

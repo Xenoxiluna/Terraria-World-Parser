@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TownManager{
+public class TownManager{
     var _home: SIMD2<Int32> = [0,0]
     var _npcId: Int32 = 0
 }

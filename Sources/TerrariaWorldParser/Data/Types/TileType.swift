@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum TileType: Int{
+public enum TileType: Int{
     case DirtBlock = 0
     case StoneBlock = 1
     case Torch = 4

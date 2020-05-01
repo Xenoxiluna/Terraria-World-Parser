@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TileEntity{
+public class TileEntity{
     var type: UInt8 = 0
     var id: Int32 = 0
     var x: Int16 = 0

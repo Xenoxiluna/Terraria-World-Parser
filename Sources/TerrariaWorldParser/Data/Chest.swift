@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Chest {
+public class Chest {
     public static var MaxItems: Int = 40
 
     var x: Int32 = 0

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum LiquidType: UInt8{
+public enum LiquidType: UInt8{
     case None = 0x0
     case Water = 0x01
     case Lava = 0x02

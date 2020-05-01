@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum BrickStyle: UInt8{
+public enum BrickStyle: UInt8{
     case Full = 0x0
     case HalfBrick = 0x1
     case SlopeTopRight = 0x2
