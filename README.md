@@ -24,4 +24,4 @@ var world: WorldFile = WorldFile(path: path)
 
 ## License
 
-`Terraria World Parser` is licensed under the [MIT License](LICENSE.txt)
+`Terraria World Parser` is licensed under the [MIT License](LICENSE)
