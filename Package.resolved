@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "BinarySwift",
+        "repositoryURL": "https://github.com/Szaq/BinarySwift.git",
+        "state": {
+          "branch": "master",
+          "revision": "b4635df053999eac3eaae97dfb8bc4fffe4f5773",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
