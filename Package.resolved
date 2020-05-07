@@ -2,11 +2,11 @@
   "object": {
     "pins": [
       {
-        "package": "BinarySwift",
-        "repositoryURL": "https://github.com/Szaq/BinarySwift.git",
+        "package": "SwiftyBytes",
+        "repositoryURL": "https://github.com/Xenoxiluna/SwiftyBytes.git",
         "state": {
           "branch": "master",
-          "revision": "b4635df053999eac3eaae97dfb8bc4fffe4f5773",
+          "revision": "8377fc3658ab43d24a76e74d6e7b5b43be0c8282",
           "version": null
         }
       }

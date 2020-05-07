@@ -1,5 +1,5 @@
 //
-//  World.swift
+//  WorldFile.swift
 //  TerrariaWorldParser
 //
 //  Created by Quentin Berry on 4/19/20.
@@ -7,166 +7,157 @@
 //
 
 import Foundation
-import BinarySwift
+import SwiftyBytes
 
 public class WorldFile{
-    private let nsData: Data
-    private let data: BinaryData
-    private let reader: BinaryDataReader
+    let data: BinaryReadableData
+    let reader: BinaryReader
     
-    public var version: UInt32 = 0
-    public var magicNumber: String = ""
-    public var fileType: FileType = FileType.None
-    public var revision: UInt32 = 0
-    public var favorite: UInt8 = 0
-    public var pointersCount: Int16 = 0
-    public var pointers: [Int32] = []
-    public var importantsCount: UInt16 = 0
-    public var importants: [Bool] = []
+    var version: UInt32 = 0
+    var magicNumber: String = ""
+    var fileType: FileType = FileType.None
+    var revision: UInt32 = 0
+    var favorite: UInt8 = 0
+    var pointersCount: Int16 = 0
+    var pointers: [Int32] = []
+    var importantsCount: UInt16 = 0
+    var importants: [Bool] = []
     
-    public var mapName: String = ""
-    public var seedText: String = ""
-    public var worldGeneratorVersion: UInt64 = 0
-    public var guid: [UInt8] = []
-    public var worldId: Int32 = 0
-    public var leftWorld: Int32 = 0
-    public var rightWorld: Int32 = 0
-    public var topWorld: Int32 = 0
-    public var bottomWorld: Int32 = 0
-    public var maxTilesY: Int32 = 0
-    public var maxTilesX: Int32 = 0
-    public var expertMode: UInt8 = 0
-    public var creationTime: Int64 = 0
-    public var moonType: UInt8 = 0
-    public var treeX: [Int32] = []
-    public var treeStyle: [Int32] = []
-    public var caveBackX: [Int32] = []
-    public var caveBackStyle: [Int32] = []
-    public var iceBackStyle: Int32 = 0
-    public var jungleBackStyle: Int32 = 0
-    public var hellBackStyle: Int32 = 0
-    public var spawnTileX: Int32 = 0
-    public var spawnTileY: Int32 = 0
-    public var worldSurface: Float64 = 0.0
-    public var rockLayer: Float64 = 0
-    public var tempTime: Float64 = 0
-    public var tempDayTime: UInt8 = 0
-    public var tempMoonPhase: Int32 = 0
-    public var tempBloodMoon: UInt8 = 0
-    public var tempEclipse: UInt8 = 0
-    public var dungeonX: Int32 = 0
-    public var dungeonY: Int32 = 0
-    public var crimson: UInt8 = 0
-    public var downedBoss1: UInt8 = 0
-    public var downedBoss2: UInt8 = 0
-    public var downedBoss3: UInt8 = 0
-    public var downedQueenBee: UInt8 = 0
-    public var downedMechBoss1: UInt8 = 0
-    public var downedMechBoss2: UInt8 = 0
-    public var downedMechBoss3: UInt8 = 0
-    public var downedMechBossAny: UInt8 = 0
-    public var downedPlantBoss: UInt8 = 0
-    public var downedGolemBoss: UInt8 = 0
-    public var downedSlimeKing: UInt8 = 0
-    public var savedGoblin: UInt8 = 0
-    public var savedWizard: UInt8 = 0
-    public var savedMech: UInt8 = 0
-    public var downedGoblins: UInt8 = 0
-    public var downedClown: UInt8 = 0
-    public var downedFrost: UInt8 = 0
-    public var downedPirates: UInt8 = 0
-    public var shadowOrbSmashed: UInt8 = 0
-    public var spawnMeteor: UInt8 = 0
-    public var shadowOrbCount: UInt8 = 0
-    public var altarCount: Int32 = 0
-    public var hardMode: UInt8 = 0
-    public var invasionDelay: Int32 = 0
-    public var invasionSize: Int32 = 0
-    public var invasionType: Int32 = 0
-    public var invasionX: Float64 = 0
-    public var slimeRainTime: Float64 = 0
-    public var sundialCooldown: UInt8 = 0
-    public var tempRaining: UInt8 = 0
-    public var tempRainTime: Int32 = 0
-    public var tempMaxRain: Float32 = 0
-    public var oreTier1: Int32 = 0
-    public var oreTier2: Int32 = 0
-    public var oreTier3: Int32 = 0
-    public var setBG0: UInt8 = 0
-    public var setBG1: UInt8 = 0
-    public var setBG2: UInt8 = 0
-    public var setBG3: UInt8 = 0
-    public var setBG4: UInt8 = 0
-    public var setBG5: UInt8 = 0
-    public var setBG6: UInt8 = 0
-    public var setBG7: UInt8 = 0
-    public var cloudBGActive: Int32 = 0
-    public var numClouds: Int16 = 0
-    public var windSpeed: Float32 = 0
-    public var anglerWhoFinishedToday: [String] = []
-    public var savedAngler: UInt8 = 0
-    public var anglerQuest: Int32 = 0
-    public var savedStylist: UInt8 = 0
-    public var savedTaxCollector: UInt8 = 0
-    public var invasionSizeStart: Int32 = 0
-    public var tempCultistDelay: Int32 = 0
-    public var killCount: [Int32] = []
-    public var fastForwardTime: UInt8 = 0
-    public var downedFishron: UInt8 = 0
-    public var downedMartians: UInt8 = 0
-    public var downedAncientCultist: UInt8 = 0
-    public var downedMoonlord: UInt8 = 0
-    public var downedHalloweenKing: UInt8 = 0
-    public var downedHalloweenTree: UInt8 = 0
-    public var downedChristmasIceQueen: UInt8 = 0
-    public var downedChristmasSantank: UInt8 = 0
-    public var downedChristmasTree: UInt8 = 0
-    public var downedTowerSolar: UInt8 = 0
-    public var downedTowerVortex: UInt8 = 0
-    public var downedTowerNebula: UInt8 = 0
-    public var downedTowerStardust: UInt8 = 0
-    public var TowerActiveSolar: UInt8 = 0
-    public var TowerActiveVortex: UInt8 = 0
-    public var TowerActiveNebula: UInt8 = 0
-    public var TowerActiveStardust: UInt8 = 0
-    public var LunarApocalypseIsUp: UInt8 = 0
-    public var tempPartyManual: UInt8 = 0
-    public var tempPartyGenuine: UInt8 = 0
-    public var tempPartyCooldown: Int32 = 0
-    public var tempPartyCelebratingNPCs: [Int32] = []
-    public var Temp_Sandstorm_Happening: UInt8 = 0
-    public var Temp_Sandstorm_TimeLeft: Int32 = 0
-    public var Temp_Sandstorm_Severity: Float32 = 0
-    public var Temp_Sandstorm_IntendedSeverity: Float32 = 0
-    public var savedBartender: UInt8 = 0
-    public var DD2Event_DownedInvasionT1: UInt8 = 0
-    public var DD2Event_DownedInvasionT2: UInt8 = 0
-    public var DD2Event_DownedInvasionT3: UInt8 = 0
+    var mapName: String = ""
+    var seedText: String = ""
+    var worldGeneratorVersion: UInt64 = 0
+    var guid: [UInt8] = []
+    var worldId: Int32 = 0
+    var leftWorld: Int32 = 0
+    var rightWorld: Int32 = 0
+    var topWorld: Int32 = 0
+    var bottomWorld: Int32 = 0
+    var maxTilesY: Int32 = 0
+    var maxTilesX: Int32 = 0
+    var expertMode: UInt8 = 0
+    var creationTime: Int64 = 0
+    var moonType: UInt8 = 0
+    var treeX: [Int32] = []
+    var treeStyle: [Int32] = []
+    var caveBackX: [Int32] = []
+    var caveBackStyle: [Int32] = []
+    var iceBackStyle: Int32 = 0
+    var jungleBackStyle: Int32 = 0
+    var hellBackStyle: Int32 = 0
+    var spawnTileX: Int32 = 0
+    var spawnTileY: Int32 = 0
+    var worldSurface: Float64 = 0.0
+    var rockLayer: Float64 = 0
+    var tempTime: Float64 = 0
+    var tempDayTime: UInt8 = 0
+    var tempMoonPhase: Int32 = 0
+    var tempBloodMoon: UInt8 = 0
+    var tempEclipse: UInt8 = 0
+    var dungeonX: Int32 = 0
+    var dungeonY: Int32 = 0
+    var crimson: UInt8 = 0
+    var downedBoss1: UInt8 = 0
+    var downedBoss2: UInt8 = 0
+    var downedBoss3: UInt8 = 0
+    var downedQueenBee: UInt8 = 0
+    var downedMechBoss1: UInt8 = 0
+    var downedMechBoss2: UInt8 = 0
+    var downedMechBoss3: UInt8 = 0
+    var downedMechBossAny: UInt8 = 0
+    var downedPlantBoss: UInt8 = 0
+    var downedGolemBoss: UInt8 = 0
+    var downedSlimeKing: UInt8 = 0
+    var savedGoblin: UInt8 = 0
+    var savedWizard: UInt8 = 0
+    var savedMech: UInt8 = 0
+    var downedGoblins: UInt8 = 0
+    var downedClown: UInt8 = 0
+    var downedFrost: UInt8 = 0
+    var downedPirates: UInt8 = 0
+    var shadowOrbSmashed: UInt8 = 0
+    var spawnMeteor: UInt8 = 0
+    var shadowOrbCount: UInt8 = 0
+    var altarCount: Int32 = 0
+    var hardMode: UInt8 = 0
+    var invasionDelay: Int32 = 0
+    var invasionSize: Int32 = 0
+    var invasionType: Int32 = 0
+    var invasionX: Float64 = 0
+    var slimeRainTime: Float64 = 0
+    var sundialCooldown: UInt8 = 0
+    var tempRaining: UInt8 = 0
+    var tempRainTime: Int32 = 0
+    var tempMaxRain: Float32 = 0
+    var oreTier1: Int32 = 0
+    var oreTier2: Int32 = 0
+    var oreTier3: Int32 = 0
+    var setBG0: UInt8 = 0
+    var setBG1: UInt8 = 0
+    var setBG2: UInt8 = 0
+    var setBG3: UInt8 = 0
+    var setBG4: UInt8 = 0
+    var setBG5: UInt8 = 0
+    var setBG6: UInt8 = 0
+    var setBG7: UInt8 = 0
+    var cloudBGActive: Int32 = 0
+    var numClouds: Int16 = 0
+    var windSpeed: Float32 = 0
+    var anglerWhoFinishedToday: [String] = []
+    var savedAngler: UInt8 = 0
+    var anglerQuest: Int32 = 0
+    var savedStylist: UInt8 = 0
+    var savedTaxCollector: UInt8 = 0
+    var invasionSizeStart: Int32 = 0
+    var tempCultistDelay: Int32 = 0
+    var killCount: [Int32] = []
+    var fastForwardTime: UInt8 = 0
+    var downedFishron: UInt8 = 0
+    var downedMartians: UInt8 = 0
+    var downedAncientCultist: UInt8 = 0
+    var downedMoonlord: UInt8 = 0
+    var downedHalloweenKing: UInt8 = 0
+    var downedHalloweenTree: UInt8 = 0
+    var downedChristmasIceQueen: UInt8 = 0
+    var downedChristmasSantank: UInt8 = 0
+    var downedChristmasTree: UInt8 = 0
+    var downedTowerSolar: UInt8 = 0
+    var downedTowerVortex: UInt8 = 0
+    var downedTowerNebula: UInt8 = 0
+    var downedTowerStardust: UInt8 = 0
+    var TowerActiveSolar: UInt8 = 0
+    var TowerActiveVortex: UInt8 = 0
+    var TowerActiveNebula: UInt8 = 0
+    var TowerActiveStardust: UInt8 = 0
+    var LunarApocalypseIsUp: UInt8 = 0
+    var tempPartyManual: UInt8 = 0
+    var tempPartyGenuine: UInt8 = 0
+    var tempPartyCooldown: Int32 = 0
+    var tempPartyCelebratingNPCs: [Int32] = []
+    var Temp_Sandstorm_Happening: UInt8 = 0
+    var Temp_Sandstorm_TimeLeft: Int32 = 0
+    var Temp_Sandstorm_Severity: Float32 = 0
+    var Temp_Sandstorm_IntendedSeverity: Float32 = 0
+    var savedBartender: UInt8 = 0
+    var DD2Event_DownedInvasionT1: UInt8 = 0
+    var DD2Event_DownedInvasionT2: UInt8 = 0
+    var DD2Event_DownedInvasionT3: UInt8 = 0
     
-    public var tileDataArray: [[Tile]] = []
-    public var chestDataArray: [Chest] = []
-    public var signDataArray: [Sign] = []
-    public var NPCDataArray: [NPC] = []
-    public var mobDataArray: [NPC] = []
-    public var playerRoomArray: [TownManager] = []
-    public var tileEntitiesNumber: Int32 = 0
-    public var tileEntitiesArray: [TileEntity] = []
-    public var pressurePlatesArray: [PressurePlate] = []
+    var tileDataArray: [[Tile]] = []
+    var chestDataArray: [Chest] = []
+    var signDataArray: [Sign] = []
+    var NPCDataArray: [NPC] = []
+    var mobDataArray: [NPC] = []
+    var playerRoomArray: [TownManager] = []
+    var tileEntitiesNumber: Int32 = 0
+    var tileEntitiesArray: [TileEntity] = []
+    var pressurePlatesArray: [PressurePlate] = []
     
-    public init(path: String) {
-        do{
-            self.nsData = try Data(contentsOf: URL(fileURLWithPath: path))
-            self.data = BinaryData(data: nsData)
-            self.reader = BinaryDataReader(data)
-        }catch{
-            print("Failed")
-            self.nsData = Data()
-            self.data = BinaryData()
-            self.reader = BinaryDataReader(data)
-        }
+    init(data: Data) {
+        self.data = BinaryReadableData(data: data)
+        self.reader = BinaryReader(self.data)
     }
     
-    public func parseWorldFile() throws {
+    func parseWorldFile() throws {
         try parseFileHeader()
         print("\(self.reader.readIndex)")
         if (self.pointers[0] != self.reader.readIndex)
@@ -235,20 +226,20 @@ public class WorldFile{
     }
     
     private func parseFileHeader() throws {
-        self.version = try reader.read(false)
-        self.magicNumber = try reader.readUTF8(7)
-        self.fileType = FileType.init(rawValue: try reader.read(false))!
-        self.revision = try reader.read(false)
-        let _ = try reader.readUTF8(7)
-        self.favorite = try reader.read(false)
-        self.pointersCount = try reader.read(false)
+        self.version = try reader.readUInt32()
+        self.magicNumber = try reader.readString(7)
+        self.fileType = FileType.init(rawValue: try reader.readUInt8())!
+        self.revision = try reader.readUInt32()
+        let _ = try reader.readString(7)
+        self.favorite = try reader.readUInt8()
+        self.pointersCount = try reader.readInt16()
         self.pointers = [Int32](repeating: 0, count: Int(self.pointersCount))
 
         for i in 0..<Int(self.pointersCount){
-            self.pointers[i] += try reader.read(false)
+            self.pointers[i] += try reader.readInt32()
         }
 
-        self.importantsCount = try reader.read(false)
+        self.importantsCount = try reader.readUInt16()
         self.importants = [Bool](repeating: false, count: Int(self.importantsCount))
         
         try ReadBitArray()
@@ -256,8 +247,8 @@ public class WorldFile{
 
     private func parseHeader() throws{
         do{
-            self.mapName = try reader.readNullTerminatedUTF8NoTrail(data: data)
-            self.seedText = try reader.readNullTerminatedUTF8NoTrail(data: data)
+            self.mapName = try reader.readNullTerminatedStringNoTrail()
+            self.seedText = try reader.readNullTerminatedStringNoTrail()
             let mapArr = self.mapName.components(separatedBy: "\n")
             if(mapArr.count > 1){
                 self.mapName = mapArr[0]
@@ -265,167 +256,167 @@ public class WorldFile{
                     self.seedText = mapArr[1]
                 }
             }else{
-                var _ = try reader.readNullTerminatedUTF8()
-                var _ = try reader.readNullTerminatedUTF8()
+                var _ = try reader.readNullTerminatedString()
+                var _ = try reader.readNullTerminatedString()
             }
         }catch{
             print("Failed first Parse")
         }
         
-        self.worldGeneratorVersion = try reader.read(false)
-        self.guid = (try reader.read(15)).data // 16 maybe?
-        self.worldId = try reader.read(false)
-        self.leftWorld = try reader.read(false)
-        self.rightWorld = try reader.read(false)
-        self.topWorld = try reader.read(false)
-        self.bottomWorld = try reader.read(false)
-        self.maxTilesY = try reader.read(false)
-        self.maxTilesX = try reader.read(false)
+        self.worldGeneratorVersion = try reader.readUInt64()
+        self.guid = [UInt8](try reader.read(15)) // 16 maybe?
+        self.worldId = try reader.readInt32()
+        self.leftWorld = try reader.readInt32()
+        self.rightWorld = try reader.readInt32()
+        self.topWorld = try reader.readInt32()
+        self.bottomWorld = try reader.readInt32()
+        self.maxTilesY = try reader.readInt32()
+        self.maxTilesX = try reader.readInt32()
 
-        self.expertMode = try reader.read(false)
-        self.creationTime = try reader.read(false)
-        self.moonType = try reader.read(false)
+        self.expertMode = try reader.readUInt8()
+        self.creationTime = try reader.readInt64()
+        self.moonType = try reader.readUInt8()
 
         self.treeX = [Int32](repeating: 0, count: 3)
-        self.treeX[0] = try reader.read(false)
-        self.treeX[1] = try reader.read(false)
-        self.treeX[2] = try reader.read(false)
+        self.treeX[0] = try reader.readInt32()
+        self.treeX[1] = try reader.readInt32()
+        self.treeX[2] = try reader.readInt32()
 
         self.treeStyle = [Int32](repeating: 0, count: 4)
-        self.treeStyle[0] = try reader.read(false)
-        self.treeStyle[1] = try reader.read(false)
-        self.treeStyle[2] = try reader.read(false)
-        self.treeStyle[3] = try reader.read(false)
+        self.treeStyle[0] = try reader.readInt32()
+        self.treeStyle[1] = try reader.readInt32()
+        self.treeStyle[2] = try reader.readInt32()
+        self.treeStyle[3] = try reader.readInt32()
 
         self.caveBackX = [Int32](repeating: 0, count: 3)
-        self.caveBackX[0] = try reader.read(false)
-        self.caveBackX[1] = try reader.read(false)
-        self.caveBackX[2] = try reader.read(false)
+        self.caveBackX[0] = try reader.readInt32()
+        self.caveBackX[1] = try reader.readInt32()
+        self.caveBackX[2] = try reader.readInt32()
 
         self.caveBackStyle = [Int32](repeating: 0, count: 4)
-        self.caveBackStyle[0] = try reader.read(false)
-        self.caveBackStyle[1] = try reader.read(false)
-        self.caveBackStyle[2] = try reader.read(false)
-        self.caveBackStyle[3] = try reader.read(false)
+        self.caveBackStyle[0] = try reader.readInt32()
+        self.caveBackStyle[1] = try reader.readInt32()
+        self.caveBackStyle[2] = try reader.readInt32()
+        self.caveBackStyle[3] = try reader.readInt32()
 
-        self.iceBackStyle = try reader.read(false)
-        self.jungleBackStyle = try reader.read(false)
-        self.hellBackStyle = try reader.read(false)
-        self.spawnTileX = try reader.read(false)
-        self.spawnTileY = try reader.read(false)
-        self.worldSurface = try reader.read()
-        self.rockLayer = try reader.read()
-        self.tempTime = try reader.read()
-        self.tempDayTime = try reader.read(false)
-        self.tempMoonPhase = try reader.read(false)
-        self.tempBloodMoon = try reader.read(false)
-        self.tempEclipse = try reader.read(false)
-        self.dungeonX = try reader.read(false)
-        self.dungeonY = try reader.read(false)
-        self.crimson = try reader.read(false)
-        self.downedBoss1 = try reader.read(false)
-        self.downedBoss2 = try reader.read(false)
-        self.downedBoss3 = try reader.read(false)
-        self.downedQueenBee = try reader.read(false)
-        self.downedMechBoss1 = try reader.read(false)
-        self.downedMechBoss2 = try reader.read(false)
-        self.downedMechBoss3 = try reader.read(false)
-        self.downedMechBossAny = try reader.read(false)
-        self.downedPlantBoss = try reader.read(false)
-        self.downedGolemBoss = try reader.read(false)
-        self.downedSlimeKing = try reader.read(false)
-        self.savedGoblin = try reader.read(false)
-        self.savedWizard = try reader.read(false)
-        self.savedMech = try reader.read(false)
-        self.downedGoblins = try reader.read(false)
-        self.downedClown = try reader.read(false)
-        self.downedFrost = try reader.read(false)
-        self.downedPirates = try reader.read(false)
-        self.shadowOrbSmashed = try reader.read(false)
-        self.spawnMeteor = try reader.read(false)
-        self.shadowOrbCount = try reader.read(false)
-        self.altarCount = try reader.read(false)
-        self.hardMode = try reader.read(false)
-        self.invasionDelay = try reader.read(false)
-        self.invasionSize = try reader.read(false)
-        self.invasionType = try reader.read(false)
-        self.invasionX = try reader.read()
-        self.slimeRainTime = try reader.read()
-        self.sundialCooldown = try reader.read(false)
-        self.tempRaining = try reader.read(false)
-        self.tempRainTime = try reader.read(false)
-        self.tempMaxRain = try reader.read()
-        self.oreTier1 = try reader.read(false)
-        self.oreTier2 = try reader.read(false)
-        self.oreTier3 = try reader.read(false)
-        self.setBG0 = try reader.read(false)
-        self.setBG1 = try reader.read(false)
-        self.setBG2 = try reader.read(false)
-        self.setBG3 = try reader.read(false)
-        self.setBG4 = try reader.read(false)
-        self.setBG5 = try reader.read(false)
-        self.setBG6 = try reader.read(false)
-        self.setBG7 = try reader.read(false)
-        self.cloudBGActive = try reader.read(false)
-        self.numClouds = try reader.read(false)
-        self.windSpeed = try reader.read()
+        self.iceBackStyle = try reader.readInt32()
+        self.jungleBackStyle = try reader.readInt32()
+        self.hellBackStyle = try reader.readInt32()
+        self.spawnTileX = try reader.readInt32()
+        self.spawnTileY = try reader.readInt32()
+        self.worldSurface = try reader.readFloat64()
+        self.rockLayer = try reader.readFloat64()
+        self.tempTime = try reader.readFloat64()
+        self.tempDayTime = try reader.readUInt8()
+        self.tempMoonPhase = try reader.readInt32()
+        self.tempBloodMoon = try reader.readUInt8()
+        self.tempEclipse = try reader.readUInt8()
+        self.dungeonX = try reader.readInt32()
+        self.dungeonY = try reader.readInt32()
+        self.crimson = try reader.readUInt8()
+        self.downedBoss1 = try reader.readUInt8()
+        self.downedBoss2 = try reader.readUInt8()
+        self.downedBoss3 = try reader.readUInt8()
+        self.downedQueenBee = try reader.readUInt8()
+        self.downedMechBoss1 = try reader.readUInt8()
+        self.downedMechBoss2 = try reader.readUInt8()
+        self.downedMechBoss3 = try reader.readUInt8()
+        self.downedMechBossAny = try reader.readUInt8()
+        self.downedPlantBoss = try reader.readUInt8()
+        self.downedGolemBoss = try reader.readUInt8()
+        self.downedSlimeKing = try reader.readUInt8()
+        self.savedGoblin = try reader.readUInt8()
+        self.savedWizard = try reader.readUInt8()
+        self.savedMech = try reader.readUInt8()
+        self.downedGoblins = try reader.readUInt8()
+        self.downedClown = try reader.readUInt8()
+        self.downedFrost = try reader.readUInt8()
+        self.downedPirates = try reader.readUInt8()
+        self.shadowOrbSmashed = try reader.readUInt8()
+        self.spawnMeteor = try reader.readUInt8()
+        self.shadowOrbCount = try reader.readUInt8()
+        self.altarCount = try reader.readInt32()
+        self.hardMode = try reader.readUInt8()
+        self.invasionDelay = try reader.readInt32()
+        self.invasionSize = try reader.readInt32()
+        self.invasionType = try reader.readInt32()
+        self.invasionX = try reader.readFloat64()
+        self.slimeRainTime = try reader.readFloat64()
+        self.sundialCooldown = try reader.readUInt8()
+        self.tempRaining = try reader.readUInt8()
+        self.tempRainTime = try reader.readInt32()
+        self.tempMaxRain = try reader.readFloat32()
+        self.oreTier1 = try reader.readInt32()
+        self.oreTier2 = try reader.readInt32()
+        self.oreTier3 = try reader.readInt32()
+        self.setBG0 = try reader.readUInt8()
+        self.setBG1 = try reader.readUInt8()
+        self.setBG2 = try reader.readUInt8()
+        self.setBG3 = try reader.readUInt8()
+        self.setBG4 = try reader.readUInt8()
+        self.setBG5 = try reader.readUInt8()
+        self.setBG6 = try reader.readUInt8()
+        self.setBG7 = try reader.readUInt8()
+        self.cloudBGActive = try reader.readInt32()
+        self.numClouds = try reader.readInt16()
+        self.windSpeed = try reader.readFloat32()
 
         self.anglerWhoFinishedToday = []
-        let anglerCount: Int32 = try reader.read(false)
+        let anglerCount: Int32 = try reader.readInt32()
         for _ in 0..<anglerCount{
-            anglerWhoFinishedToday += [try reader.readNullTerminatedUTF8()]
+            anglerWhoFinishedToday += [try reader.readNullTerminatedString()]
         }
         
-        self.savedAngler = try reader.read(false)
-        self.anglerQuest = try reader.read(false)
-        self.savedStylist = try reader.read(false)
-        self.savedTaxCollector = try reader.read(false)
-        self.invasionSizeStart = try reader.read(false)
-        self.tempCultistDelay = try reader.read(false)
+        self.savedAngler = try reader.readUInt8()
+        self.anglerQuest = try reader.readInt32()
+        self.savedStylist = try reader.readUInt8()
+        self.savedTaxCollector = try reader.readUInt8()
+        self.invasionSizeStart = try reader.readInt32()
+        self.tempCultistDelay = try reader.readInt32()
 
-        let numberOfMobs: Int16 = try reader.read(false)
+        let numberOfMobs: Int16 = try reader.readInt16()
         self.killCount = [Int32](repeating: 0, count: Int(numberOfMobs))
         for _ in 0..<Int(numberOfMobs) {
-            self.killCount += [try reader.read(false)]
+            self.killCount += [try reader.readInt32()]
         }
 
-        self.fastForwardTime = try reader.read(false)
-        self.downedFishron = try reader.read(false)
-        self.downedMartians = try reader.read(false)
-        self.downedAncientCultist = try reader.read(false)
-        self.downedMoonlord = try reader.read(false)
-        self.downedHalloweenKing = try reader.read(false)
-        self.downedHalloweenTree = try reader.read(false)
-        self.downedChristmasIceQueen = try reader.read(false)
-        self.downedChristmasSantank = try reader.read(false)
-        self.downedChristmasTree = try reader.read(false)
-        self.downedTowerSolar = try reader.read(false)
-        self.downedTowerVortex = try reader.read(false)
-        self.downedTowerNebula = try reader.read(false)
-        self.downedTowerStardust = try reader.read(false)
-        self.TowerActiveSolar = try reader.read(false)
-        self.TowerActiveVortex = try reader.read(false)
-        self.TowerActiveNebula = try reader.read(false)
-        self.TowerActiveStardust = try reader.read(false)
-        self.LunarApocalypseIsUp = try reader.read(false)
-        self.tempPartyManual = try reader.read(false)
-        self.tempPartyGenuine = try reader.read(false)
-        self.tempPartyCooldown = try reader.read(false)
+        self.fastForwardTime = try reader.readUInt8()
+        self.downedFishron = try reader.readUInt8()
+        self.downedMartians = try reader.readUInt8()
+        self.downedAncientCultist = try reader.readUInt8()
+        self.downedMoonlord = try reader.readUInt8()
+        self.downedHalloweenKing = try reader.readUInt8()
+        self.downedHalloweenTree = try reader.readUInt8()
+        self.downedChristmasIceQueen = try reader.readUInt8()
+        self.downedChristmasSantank = try reader.readUInt8()
+        self.downedChristmasTree = try reader.readUInt8()
+        self.downedTowerSolar = try reader.readUInt8()
+        self.downedTowerVortex = try reader.readUInt8()
+        self.downedTowerNebula = try reader.readUInt8()
+        self.downedTowerStardust = try reader.readUInt8()
+        self.TowerActiveSolar = try reader.readUInt8()
+        self.TowerActiveVortex = try reader.readUInt8()
+        self.TowerActiveNebula = try reader.readUInt8()
+        self.TowerActiveStardust = try reader.readUInt8()
+        self.LunarApocalypseIsUp = try reader.readUInt8()
+        self.tempPartyManual = try reader.readUInt8()
+        self.tempPartyGenuine = try reader.readUInt8()
+        self.tempPartyCooldown = try reader.readInt32()
 
-        let numparty: Int32 = try reader.read(false)
+        let numparty: Int32 = try reader.readInt32()
         self.tempPartyCelebratingNPCs = [Int32](repeating: 0, count: Int(numparty))
         for _ in 0..<(Int(numparty)) {
-            self.tempPartyCelebratingNPCs.append(try reader.read(false))
+            self.tempPartyCelebratingNPCs.append(try reader.readInt32())
         }
 
-        self.Temp_Sandstorm_Happening = try reader.read(false)
-        self.Temp_Sandstorm_TimeLeft = try reader.read(false)
-        self.Temp_Sandstorm_Severity = try reader.read()
-        self.Temp_Sandstorm_IntendedSeverity = try reader.read()
-        self.savedBartender = try reader.read(false)
-        self.DD2Event_DownedInvasionT1 = try reader.read(false)
-        self.DD2Event_DownedInvasionT2 = try reader.read(false)
-        self.DD2Event_DownedInvasionT3 = try reader.read(false)
+        self.Temp_Sandstorm_Happening = try reader.readUInt8()
+        self.Temp_Sandstorm_TimeLeft = try reader.readInt32()
+        self.Temp_Sandstorm_Severity = try reader.readFloat32()
+        self.Temp_Sandstorm_IntendedSeverity = try reader.readFloat32()
+        self.savedBartender = try reader.readUInt8()
+        self.DD2Event_DownedInvasionT1 = try reader.readUInt8()
+        self.DD2Event_DownedInvasionT2 = try reader.readUInt8()
+        self.DD2Event_DownedInvasionT3 = try reader.readUInt8()
     }
     
     private func parseTileData() throws{
@@ -462,15 +453,15 @@ public class WorldFile{
         var tileType: UInt16 = 0
         var header3: UInt8 = 0
         var header2: UInt8 = 0
-        let header1: UInt8 = try reader.read(false)
+        let header1: UInt8 = try reader.readUInt8()
         
         // check bit[0] header2 data
         if ((header1 & 1) == 1){
-            header2 = try reader.read(false)
+            header2 = try reader.readUInt8()
 
             // check bit[0] header3 data
             if ((header2 & 1) == 1){
-                header3 = try reader.read(false)
+                header3 = try reader.readUInt8()
             }
         }
         
@@ -481,10 +472,10 @@ public class WorldFile{
             // read tile type
             if ((header1 & 32) != 32){ // check bit[5] to see if tile is byte or little endian int16
                 // if tile is UInt8
-                let tempType: UInt8 = try reader.read(false)
+                let tempType: UInt8 = try reader.readUInt8()
                 tileType = UInt16(tempType)
             }else{
-                 tileType = try reader.read(false)
+                 tileType = try reader.readUInt16()
             }
             tile.tileType = tileType
 
@@ -493,22 +484,22 @@ public class WorldFile{
                 tile.u = -1
                 tile.v = -1
             }else{
-                tile.u = try reader.read(false)
-                tile.v = try reader.read(false)
+                tile.u = try reader.readInt16()
+                tile.v = try reader.readInt16()
             }
 
             // check header3 bit[3] tile color
             if ((header3 & 8) == 8){
-                tile.TileColor = try reader.read(false)
+                tile.TileColor = try reader.readUInt8()
             }
         }
 
         // Read Walls
         if ((header1 & 4) == 4) {// check bit[3] bit for active wall
-            tile.Wall = try reader.read(false)
+            tile.Wall = try reader.readUInt8()
             // check bit[4] of header3 for wall color
             if ((header3 & 16) == 16){
-                tile.WallColor = try reader.read(false)
+                tile.WallColor = try reader.readUInt8()
             }
         }
 
@@ -516,7 +507,7 @@ public class WorldFile{
         // bit[3] and bit[4], shift to 0 and 1 bits
         let liquidType: UInt8 = (header1 & 24) >> 3
         if (liquidType != 0){
-            tile.LiquidAmount = try reader.read(false)
+            tile.LiquidAmount = try reader.readUInt8()
             tile.LiquidType = LiquidType(rawValue: liquidType)!
         }
 
@@ -573,10 +564,10 @@ public class WorldFile{
             case 0:
                 rle = 0
             case 1:
-                let tempRLE: UInt8 = try reader.read(false)
+                let tempRLE: UInt8 = try reader.readUInt8()
                 rle = UInt16(tempRLE) + 1
             case 2:
-                rle = try reader.read(false) + 1
+                rle = try reader.readUInt16() + 1
             default:
                 throw ParseError.RLECompressionError
         }
@@ -584,8 +575,8 @@ public class WorldFile{
     }
     
     private func parseChestData() throws {
-        let totalChests: Int16 = try reader.read(false)
-        let maxItems: Int16 = try reader.read(false)
+        let totalChests: Int16 = try reader.readInt16()
+        let maxItems: Int16 = try reader.readInt16()
 
         // check overflow items
         var itemsPerChest: Int
@@ -602,19 +593,19 @@ public class WorldFile{
         // read chests
         for _ in 0..<totalChests{
             let chest = Chest(
-                x: try reader.read(false), //Int32
-                y: try reader.read(false), //Int32
-                name: try reader.readNullTerminatedUTF8() //String
+                x: try reader.readInt32(), //Int32
+                y: try reader.readInt32(), //Int32
+                name: try reader.readNullTerminatedString() //String
             )
 
             // read items in chest
             for slot in 0..<itemsPerChest{
-                let stackSize: Int16 = try reader.read(false)
+                let stackSize: Int16 = try reader.readInt16()
                 chest.items[slot].stackSize = stackSize
 
                 if (stackSize > 0){
-                    let id: Int32 = try reader.read(false)
-                    let prefix: UInt8 = try reader.read(false)
+                    let id: Int32 = try reader.readInt32()
+                    let prefix: UInt8 = try reader.readUInt8()
 
                     chest.items[slot].netId = id
                     chest.items[slot].stackSize = stackSize
@@ -624,10 +615,10 @@ public class WorldFile{
 
             // dump overflow items
             for _ in 0..<overflowItems{
-                let stackSize: Int16 = try reader.read(false)
+                let stackSize: Int16 = try reader.readInt16()
                 if (stackSize > 0){
-                    let _: Int32 = try reader.read(false)
-                    let _: UInt8 = try reader.read(false)
+                    let _: Int32 = try reader.readInt32()
+                    let _: UInt8 = try reader.readUInt8()
                 }
             }
             chestDataArray += [chest]
@@ -635,12 +626,12 @@ public class WorldFile{
     }
     
     private func parseSignData() throws{
-        let totalSigns: Int16 = try reader.read(false)
+        let totalSigns: Int16 = try reader.readInt16()
 
         for _ in 0..<totalSigns{
-            let text: String = try reader.readNullTerminatedUTF8() //String
-            let x: Int32 = try reader.read(false)
-            let y: Int32 = try reader.read(false)
+            let text: String = try reader.readNullTerminatedString() //String
+            let x: Int32 = try reader.readInt32()
+            let y: Int32 = try reader.readInt32()
             
             let sign = Sign(x: x, y: y, text: text)
             signDataArray += [sign]
@@ -648,63 +639,63 @@ public class WorldFile{
     }
     
     private func parseNPCData() throws{
-        var b: UInt8 = try reader.read(false)
+        var b: UInt8 = try reader.readUInt8()
         while b == 1{
             let npc = NPC()
-            npc.spriteId = try reader.read(false)
+            npc.spriteId = try reader.readInt32()
             
-            npc.name = try reader.readNullTerminatedASCII(data)
-            npc.position = [try reader.read(), try reader.read()]
+            npc.name = try reader.readStringEncoded(data)
+            npc.position = [try reader.readFloat32(), try reader.readFloat32()]
             
-            let isHomeless: UInt8 = try reader.read(false) //Bool
+            let isHomeless: UInt8 = try reader.readUInt8() //Bool
             if(isHomeless == 1){
                 npc.isHomeless = true
             }else{
                 npc.isHomeless = false
             }
             
-            npc.home = [try reader.read(false), try reader.read(false)]
+            npc.home = [try reader.readInt32(), try reader.readInt32()]
 
             NPCDataArray += [npc]
             
-            b = try reader.read(false)
+            b = try reader.readUInt8()
         }
     }
     
     private func parseMobData() throws {
         print("\(self.reader.readIndex)")
         
-        var b: UInt8 = try reader.read(false)
+        var b: UInt8 = try reader.readUInt8()
         while b == 1{
             let npc = NPC()
-            npc.spriteId = try reader.read(false)
-            npc.position = [try reader.read(), try reader.read()]
+            npc.spriteId = try reader.readInt32()
+            npc.position = [try reader.readFloat32(), try reader.readFloat32()]
 
             mobDataArray += [npc]
             
-            b = try reader.read(false)
+            b = try reader.readUInt8()
         }
     }
     
     private func parseTileEntities() throws {
-        self.tileEntitiesNumber = try reader.read(false)
+        self.tileEntitiesNumber = try reader.readInt32()
 
         for _ in 0..<tileEntitiesNumber{
             let entity = TileEntity()
-            entity.type = try reader.read(false)
-            entity.id = try reader.read(false)
-            entity.x = try reader.read(false)
-            entity.y = try reader.read(false)
+            entity.type = try reader.readUInt8()
+            entity.id = try reader.readInt32()
+            entity.x = try reader.readInt16()
+            entity.y = try reader.readInt16()
             switch entity.type{
                 case 0: //it is a dummy
-                    entity.npc = try reader.read(false)
+                    entity.npc = try reader.readInt16()
                 case 1: //it is a item frame
-                    entity.netId = try reader.read(false)
-                    entity.prefix = try reader.read(false)
-                    entity.stackSize = try reader.read(false)
+                    entity.netId = try reader.readInt16()
+                    entity.prefix = try reader.readUInt8()
+                    entity.stackSize = try reader.readInt16()
                 case 2: //it is a logic sensor
-                    entity.logicCheck = try reader.read(false)
-                    let on: UInt8 = try reader.read(false) //Bool
+                    entity.logicCheck = try reader.readUInt8()
+                    let on: UInt8 = try reader.readUInt8() //Bool
                     if(on == 1){
                         entity.on = true
                     }else{
@@ -718,41 +709,41 @@ public class WorldFile{
     }
     
     private func parsePressurePlate() throws {
-        let count: Int32 = try reader.read(false)
+        let count: Int32 = try reader.readInt32()
 
         for _ in 0..<count{
             let plates = PressurePlate()
-            plates.x = try reader.read(false)
-            plates.y = try reader.read(false)
+            plates.x = try reader.readInt32()
+            plates.y = try reader.readInt32()
             pressurePlatesArray += [plates]
         }
     }
     
     private func parseTownManager() throws{
-        let totalRooms: Int32 = try reader.read(false)
+        let totalRooms: Int32 = try reader.readInt32()
         for _ in 0..<totalRooms{
             let room = TownManager()
-            room._npcId = try reader.read(false)
-            room._home = [try reader.read(false), try reader.read(false)]
+            room._npcId = try reader.readInt32()
+            room._home = [try reader.readInt32(), try reader.readInt32()]
             
             playerRoomArray += [room]
         }
     }
     
     private func parseFooter() throws{
-        let b: UInt8 = try reader.read(false)
+        let b: UInt8 = try reader.readUInt8()
         print("\(b)")
         if (b == 0){
             throw ParseError.invalidFooterBool
         }
 
-        let string: String = try reader.readNullTerminatedASCII(data)
+        let string: String = try reader.readStringEncoded(data)
         print("\(string)")
         if (string != mapName){
             throw ParseError.invalidFooterString
         }
 
-        let i: Int32 = try reader.read(false)
+        let i: UInt32 = try reader.readUInt32()
         print("\(i)")
         if (i != worldId){
             throw ParseError.invalidFooterInt
@@ -773,7 +764,7 @@ public class WorldFile{
                 }
                 else
                 {
-                    data = try reader.read(false)
+                    data = try reader.readUInt8()
                     bitMask = 1;
                 }
 

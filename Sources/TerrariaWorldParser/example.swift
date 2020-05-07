@@ -7,12 +7,13 @@
 //
 
 import Foundation
-import BinarySwift
+import SwiftyBytes
 
-let path: String = "/Users/Xenoxiluna1/Desktop/test2.wld"
-var world: WorldFile = WorldFile(path: path)
+/*let path: String = "/Users/Xenoxiluna1/Desktop/test2.wld"
+let nsData = try Data(contentsOf: URL(fileURLWithPath: path))
+var world: WorldFile = WorldFile(data: nsData)
 
-/*try world.parseWorldFile()
+try world.parseWorldFile()
 print("----Parse File Header----")
 print("Terraria Version: \(world.version)")
 print("Magic Number: \(world.magicNumber)")

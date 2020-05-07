@@ -12,11 +12,12 @@ You can then open a world file by the following:
 
 ```
 let path: String = "/Users/Xenoxiluna1/Desktop/test2.wld"
-var world: WorldFile = WorldFile(path: path)
+let nsData = try Data(contentsOf: URL(fileURLWithPath: path))
+var world: WorldFile = WorldFile(data: nsData)
 ```
 ## Dependencies
 
-- [BinarySwift](https://github.com/Szaq/BinarySwift)
+- [SwiftyBytes](https://github.com/Xenoxiluna/SwiftyBytes)
 
 ## References
 
