@@ -10,9 +10,7 @@ let package = Package(
         .package(url: "https://github.com/Xenoxiluna/SwiftyBytes.git", .branch("master")),
     ],
     targets: [
-        .target(
-            name: "TerrariaWorldParser", dependencies: ["SwiftyBytes"]),
-        .testTarget(
-            name: "TerrariaWorldParserTests", dependencies: ["TerrariaWorldParser"]),
+        .target(name: "TerrariaWorldParser", dependencies: ["SwiftyBytes"]),
+        .testTarget(name: "TerrariaWorldParserTests", dependencies: ["TerrariaWorldParser"]),
     ]
 )

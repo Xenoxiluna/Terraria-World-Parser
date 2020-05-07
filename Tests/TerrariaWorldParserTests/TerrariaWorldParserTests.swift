@@ -7,7 +7,8 @@ final class TerrariaWorldParserTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         let path: String = "test2.wld"
-        let world: WorldFile = WorldFile(path: path)
+        let nsData = try Data(contentsOf: URL(fileURLWithPath: path))
+        var world: WorldFile = WorldFile(data: nsData)
         try world.parseWorldFile()
         XCTAssertEqual(world.version, 194)
     }
