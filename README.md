@@ -17,7 +17,7 @@ var world: WorldFile = WorldFile(data: nsData)
 ```
 ## Dependencies
 
-- [SwiftyBytes 0.1.0](https://github.com/Xenoxiluna/SwiftyBytes)
+- [SwiftyBytes 0.2.0](https://github.com/Xenoxiluna/SwiftyBytes)
 
 ## References
 

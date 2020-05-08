@@ -246,25 +246,11 @@ public class WorldFile{
     }
 
     private func parseHeader() throws{
-        do{
-            self.mapName = try reader.readNullTerminatedStringNoTrail()
-            self.seedText = try reader.readNullTerminatedStringNoTrail()
-            let mapArr = self.mapName.components(separatedBy: "\n")
-            if(mapArr.count > 1){
-                self.mapName = mapArr[0]
-                if(!(self.seedText.count > 0)){
-                    self.seedText = mapArr[1]
-                }
-            }else{
-                var _ = try reader.readNullTerminatedString()
-                var _ = try reader.readNullTerminatedString()
-            }
-        }catch{
-            print("Failed first Parse")
-        }
+        self.mapName = try reader.read7BitEncodedString()
+        self.seedText = try reader.read7BitEncodedString()
         
         self.worldGeneratorVersion = try reader.readUInt64()
-        self.guid = [UInt8](try reader.read(15)) // 16 maybe?
+        self.guid = [UInt8](try reader.read(16))
         self.worldId = try reader.readInt32()
         self.leftWorld = try reader.readInt32()
         self.rightWorld = try reader.readInt32()
@@ -364,7 +350,7 @@ public class WorldFile{
         self.anglerWhoFinishedToday = []
         let anglerCount: Int32 = try reader.readInt32()
         for _ in 0..<anglerCount{
-            anglerWhoFinishedToday += [try reader.readNullTerminatedString()]
+            anglerWhoFinishedToday += [try reader.read7BitEncodedString()]
         }
         
         self.savedAngler = try reader.readUInt8()
@@ -595,7 +581,7 @@ public class WorldFile{
             let chest = Chest(
                 x: try reader.readInt32(), //Int32
                 y: try reader.readInt32(), //Int32
-                name: try reader.readNullTerminatedString() //String
+                name: try reader.read7BitEncodedString() //String
             )
 
             // read items in chest
@@ -629,7 +615,7 @@ public class WorldFile{
         let totalSigns: Int16 = try reader.readInt16()
 
         for _ in 0..<totalSigns{
-            let text: String = try reader.readNullTerminatedString() //String
+            let text: String = try reader.read7BitEncodedString() //String
             let x: Int32 = try reader.readInt32()
             let y: Int32 = try reader.readInt32()
             
@@ -644,7 +630,7 @@ public class WorldFile{
             let npc = NPC()
             npc.spriteId = try reader.readInt32()
             
-            npc.name = try reader.readStringEncoded(data)
+            npc.name = try reader.read7BitEncodedString()
             npc.position = [try reader.readFloat32(), try reader.readFloat32()]
             
             let isHomeless: UInt8 = try reader.readUInt8() //Bool
@@ -737,7 +723,7 @@ public class WorldFile{
             throw ParseError.invalidFooterBool
         }
 
-        let string: String = try reader.readStringEncoded(data)
+        let string: String = try reader.read7BitEncodedString()
         print("\(string)")
         if (string != mapName){
             throw ParseError.invalidFooterString

@@ -7,7 +7,7 @@ let package = Package(
         .library(name: "TerrariaWorldParser", targets: ["TerrariaWorldParser"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Xenoxiluna/SwiftyBytes.git", from: "0.1.0"),
+        .package(url: "https://github.com/Xenoxiluna/SwiftyBytes.git", from: "0.2.0"),
     ],
     targets: [
         .target(name: "TerrariaWorldParser", dependencies: ["SwiftyBytes"]),
