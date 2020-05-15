@@ -9,20 +9,20 @@
 import Foundation
 
 public class TileEntity{
-    var type: UInt8 = 0
-    var id: Int32 = 0
-    var x: Int16 = 0
-    var y: Int16 = 0
+    public var type: UInt8 = 0
+    public var id: Int32 = 0
+    public var x: Int16 = 0
+    public var y: Int16 = 0
 
     //dummy npc
-    var npc: Int16 = 0
+    public var npc: Int16 = 0
 
     //tem frame
-    var netId: Int16 = 0
-    var prefix: UInt8 = 0
-    var stackSize: Int16 = 0
+    public var netId: Int16 = 0
+    public var prefix: UInt8 = 0
+    public var stackSize: Int16 = 0
 
     //Logic Sensor
-    var logicCheck: UInt8 = 0
-    var on: Bool = false
+    public var logicCheck: UInt8 = 0
+    public var on: Bool = false
 }

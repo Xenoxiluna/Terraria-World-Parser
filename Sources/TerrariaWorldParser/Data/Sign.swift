@@ -9,17 +9,17 @@
 import Foundation
 
 public class Sign{
-    var name: String = ""
-    var signId: Int = -1
-    var text: String = ""
-    var x: Int32 = 0
-    var y: Int32 = 0
+    public var name: String = ""
+    public var signId: Int = -1
+    public var text: String = ""
+    public var x: Int32 = 0
+    public var y: Int32 = 0
     
-    init(){
+    public init(){
         self.text = ""
     }
 
-    init(x: Int32, y: Int32, text: String){
+    public init(x: Int32, y: Int32, text: String){
         self.text = text
         self.x = x
         self.y = y

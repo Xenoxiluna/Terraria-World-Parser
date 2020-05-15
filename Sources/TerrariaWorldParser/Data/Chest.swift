@@ -11,24 +11,24 @@ import Foundation
 public class Chest {
     public static var MaxItems: Int = 40
 
-    var x: Int32 = 0
-    var y: Int32 = 0
-    var name: String = ""
-    var chestId: Int = -1
-    var items: [Item] = []
+    public var x: Int32 = 0
+    public var y: Int32 = 0
+    public var name: String = ""
+    public var chestId: Int = -1
+    public var items: [Item] = []
 
-    init(){
+    public init(){
         for _ in 0..<Chest.MaxItems{
             self.items = Array(repeating: Item.init(), count: Chest.MaxItems)
         }
     }
     
-    init(x: Int32, y: Int32){
+    public init(x: Int32, y: Int32){
         self.x = x
         self.y = y
     }
 
-    init(x: Int32, y: Int32, name: String){
+    public init(x: Int32, y: Int32, name: String){
         self.x = x
         self.y = y
         self.name = name

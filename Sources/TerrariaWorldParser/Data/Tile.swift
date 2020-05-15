@@ -9,22 +9,22 @@
 import Foundation
 
 public struct Tile{
-    var IsActive: Bool = false
-    var WireRed: Bool = false
-    var WireGreen: Bool = false
-    var WireBlue: Bool = false
-    var WireYellow: Bool = false
-    var TileColor: UInt8 = 0
-    var tileType: UInt16 = 0
-    var Wall: UInt8 = 0
-    var WallColor: UInt8 = 0
-    var LiquidType: LiquidType = .None
-    var LiquidAmount: UInt8 = 0
-    var BrickStyle: BrickStyle = .Full
-    var Actuator: Bool = false
-    var InActive: Bool = false
-    var u: Int16, v: Int16 = 0
+    public var IsActive: Bool = false
+    public var WireRed: Bool = false
+    public var WireGreen: Bool = false
+    public var WireBlue: Bool = false
+    public var WireYellow: Bool = false
+    public var TileColor: UInt8 = 0
+    public var tileType: UInt16 = 0
+    public var Wall: UInt8 = 0
+    public var WallColor: UInt8 = 0
+    public var LiquidType: LiquidType = .None
+    public var LiquidAmount: UInt8 = 0
+    public var BrickStyle: BrickStyle = .Full
+    public var Actuator: Bool = false
+    public var InActive: Bool = false
+    public var u: Int16, v: Int16 = 0
 
-    var uvTileCache: UInt16 = 0xFFFF //Caches UV position of a tile
-    var uvWallCache: UInt16 = 0xFFFF //Caches UV position of a wall tile
+    public var uvTileCache: UInt16 = 0xFFFF //Caches UV position of a tile
+    public var uvWallCache: UInt16 = 0xFFFF //Caches UV position of a wall tile
 }

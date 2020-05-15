@@ -9,10 +9,10 @@
 import Foundation
 
 public class NPC {
-    var home: SIMD2<Int32> = [0,0]
-    var isHomeless: Bool = false
-    var name: String = ""
-    var position: SIMD2<Float32> = [0,0]
-    var spriteId: Int32 = 0
-    var displayName: String = ""
+    public var home: SIMD2<Int32> = [0,0]
+    public var isHomeless: Bool = false
+    public var name: String = ""
+    public var position: SIMD2<Float32> = [0,0]
+    public var spriteId: Int32 = 0
+    public var displayName: String = ""
 }
