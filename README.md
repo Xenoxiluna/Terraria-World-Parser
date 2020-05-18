@@ -12,7 +12,7 @@ An example can be found in example.swift
 
 You can then open a world file by the following:
 
-```
+```swift
 let path: String = "/Users/Xenoxiluna1/Desktop/test2.wld"
 let nsData = try Data(contentsOf: URL(fileURLWithPath: path))
 var world: WorldFile = WorldFile(data: nsData)
