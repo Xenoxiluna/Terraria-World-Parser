@@ -1,6 +1,8 @@
 # WORK IN PROGRESS
 # `Terraria World Parser`
-Terraria 1.3.5.3 world parser in the Swift programing language
+Terraria 1.4.0.2 world parser in the Swift programing language
+
+#### NOTE: Terraria 1.3.5.3 is supported in version 0.2.1 and below of this library. 
 
 ## Usage
 This is a swift package. Add as a dependency in your project to use it. There is an experimental windows version available in the windows branch.
@@ -15,9 +17,12 @@ let path: String = "/Users/Xenoxiluna1/Desktop/test2.wld"
 let nsData = try Data(contentsOf: URL(fileURLWithPath: path))
 var world: WorldFile = WorldFile(data: nsData)
 ```
+
+#### The world version is expected to be 226 or higher. Please be aware that this parser will fail if the world does not meet that condition.
+
 ## Dependencies
 
-- [SwiftyBytes 0.2.0](https://github.com/Xenoxiluna/SwiftyBytes)
+- [SwiftyBytes 0.2.1](https://github.com/Xenoxiluna/SwiftyBytes)
 
 ## References
 

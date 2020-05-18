@@ -15,4 +15,5 @@ public class NPC {
     public var position: SIMD2<Float32> = [0,0]
     public var spriteId: Int32 = 0
     public var displayName: String = ""
+    public var townNpcVariationIndex: Int32 = 0
 }
