@@ -177,12 +177,12 @@ public class WorldFile{
     public var pressurePlatesArray: [PressurePlate] = []
     public var powers: [CreativePower: Any] = [CreativePower: Any]()
     
-    init(data: Data) {
+    public init(data: Data) {
         self.data = BinaryReadableData(data: data)
         self.reader = BinaryReader(self.data)
     }
     
-    func parseWorldFile() throws {
+    public func parseWorldFile() throws {
         try parseFileHeader()
         print("\(self.reader.readIndex)")
         if (self.pointers[0] != self.reader.readIndex)
