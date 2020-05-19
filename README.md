@@ -1,4 +1,3 @@
-# WORK IN PROGRESS
 # `Terraria World Parser`
 Terraria 1.4.0.2 world parser in the Swift programing language
 
