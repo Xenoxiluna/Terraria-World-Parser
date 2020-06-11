@@ -36,6 +36,7 @@ public class WorldFile{
     public var maxTilesX: Int32 = 0
     public var gameMode: Int32 = 0
     public var drunkWorld: Bool = false
+    public var gooWorld: Bool = false
     public var creationTime: Int64 = 0
     public var moonType: UInt8 = 0
     public var treeX: [Int32] = []
@@ -247,18 +248,22 @@ public class WorldFile{
             throw ParseError.invalidTileDataReadPosition
         }
         
-        try parseBestiary()
-        print("\(self.reader.readIndex)")
-        if (self.pointers[9] != self.reader.readIndex)
-        {
-            throw ParseError.invalidTileDataReadPosition
+        if self.version >= 210{
+            try parseBestiary()
+            print("\(self.reader.readIndex)")
+            if (self.pointers[9] != self.reader.readIndex)
+            {
+                throw ParseError.invalidTileDataReadPosition
+            }
         }
         
-        try parseCreativePowers()
-        print("\(self.reader.readIndex)")
-        if (self.pointers[10] != self.reader.readIndex)
-        {
-            throw ParseError.invalidTileDataReadPosition
+        if self.version >= 220{
+            try parseCreativePowers()
+            print("\(self.reader.readIndex)")
+            if (self.pointers[10] != self.reader.readIndex)
+            {
+                throw ParseError.invalidTileDataReadPosition
+            }
         }
         
         try parseFooter()
@@ -297,9 +302,24 @@ public class WorldFile{
         self.bottomWorld = try reader.readInt32()
         self.maxTilesY = try reader.readInt32()
         self.maxTilesX = try reader.readInt32()
-
-        self.gameMode = try reader.readInt32()
-        self.drunkWorld = try reader.readBool()
+        
+        if self.version >= 209{
+            self.gameMode = try reader.readInt32()
+            
+            if self.version >= 222{
+                self.drunkWorld = try reader.readBool()
+            }
+            if self.version >= 227{
+                self.gooWorld = try reader.readBool()
+            }
+        }else{
+            self.gameMode = (self.version < 112) ? 0 : try reader.readBool() ? 1 : 0 // 0 = normal || 1 = expert mode
+            if try (self.version == 208 && (try reader.readBool()))
+            {
+                self.gameMode = 2
+            }
+        }
+        
         self.creationTime = try reader.readInt64()
         self.moonType = try reader.readUInt8()
 
@@ -397,7 +417,9 @@ public class WorldFile{
         self.anglerQuest = try reader.readInt32()
         self.savedStylist = try reader.readUInt8()
         self.savedTaxCollector = try reader.readUInt8()
-        self.savedGolfer = try reader.readUInt8()
+        if self.version >= 201{
+            self.savedGolfer = try reader.readUInt8()
+        }
         self.invasionSizeStart = try reader.readInt32()
         self.tempCultistDelay = try reader.readInt32()
 
@@ -445,34 +467,55 @@ public class WorldFile{
         self.DD2Event_DownedInvasionT2 = try reader.readUInt8()
         self.DD2Event_DownedInvasionT3 = try reader.readUInt8()
         
-        self.mushroomBG = try reader.readUInt8()
-        self.underworldBG = try reader.readUInt8()
-        self.treeBG2 = try reader.readUInt8()
-        self.treeBG3 = try reader.readUInt8()
-        self.treeBG4 = try reader.readUInt8()
-        self.combatBookWasUsed = try reader.readBool()
-        self.tempLanternNightCooldown = try reader.readInt32()
-        self.tempLanternNightGenuine = try reader.readBool()
-        self.tempLanternNightManual = try reader.readBool()
-        self.tempLanternNightNextNightIsGenuine = try reader.readBool()
-        
-        let numTrees: Int32 = try reader.readInt32()
-        self.treeTopVariations = [Int32](repeating: 0, count: Int(numTrees))
-        for _ in 0..<(Int(numTrees)) {
-            self.treeTopVariations.append(try reader.readInt32())
+        if self.version > 194{
+            self.mushroomBG = try reader.readUInt8()
+        }
+        if self.version >= 215{
+            self.underworldBG = try reader.readUInt8()
+        }
+        if self.version >= 195{
+            self.treeBG2 = try reader.readUInt8()
+            self.treeBG3 = try reader.readUInt8()
+            self.treeBG4 = try reader.readUInt8()
+        }
+        if self.version >= 204{
+            self.combatBookWasUsed = try reader.readBool()
+        }
+        if self.version >= 207{
+            self.tempLanternNightCooldown = try reader.readInt32()
+            self.tempLanternNightGenuine = try reader.readBool()
+            self.tempLanternNightManual = try reader.readBool()
+            self.tempLanternNightNextNightIsGenuine = try reader.readBool()
         }
         
-        self.forceHalloweenForToday = try reader.readBool()
-        self.forceXMasForToday = try reader.readBool()
-        self.savedOreTiersCopper = try reader.readInt32()
-        self.savedOreTiersIron = try reader.readInt32()
-        self.savedOreTiersSilver = try reader.readInt32()
-        self.savedOreTiersGold = try reader.readInt32()
-        self.boughtCat = try reader.readBool()
-        self.boughtDog = try reader.readBool()
-        self.boughtBunny = try reader.readBool()
-        self.downedEmpressOfLight = try reader.readBool()
-        self.downedQueenSlime = try reader.readBool()
+        if self.version >= 211{
+            let numTrees: Int32 = try reader.readInt32()
+            self.treeTopVariations = [Int32](repeating: 0, count: Int(numTrees))
+            for _ in 0..<(Int(numTrees)) {
+                self.treeTopVariations.append(try reader.readInt32())
+            }
+        }
+        
+        if self.version >= 212{
+            self.forceHalloweenForToday = try reader.readBool()
+            self.forceXMasForToday = try reader.readBool()
+        }
+        if self.version >= 216{
+            self.savedOreTiersCopper = try reader.readInt32()
+            self.savedOreTiersIron = try reader.readInt32()
+            self.savedOreTiersSilver = try reader.readInt32()
+            self.savedOreTiersGold = try reader.readInt32()
+        }
+        
+        if self.version >= 217{
+            self.boughtCat = try reader.readBool()
+            self.boughtDog = try reader.readBool()
+            self.boughtBunny = try reader.readBool()
+        }
+        if self.version >= 223{
+            self.downedEmpressOfLight = try reader.readBool()
+            self.downedQueenSlime = try reader.readBool()
+        }
     }
     
     private func parseTileData() throws{
@@ -712,9 +755,11 @@ public class WorldFile{
             
             npc.home = [try reader.readInt32(), try reader.readInt32()]
 
-            if try reader.readBool() == true
-            {
-                npc.townNpcVariationIndex = try reader.readInt32()
+            if self.version >= 213{
+                if try reader.readBool() == true
+                {
+                    npc.townNpcVariationIndex = try reader.readInt32()
+                }
             }
             
             NPCDataArray += [npc]

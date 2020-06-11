@@ -17,4 +17,5 @@ enum ParseError: Error{
     case invalidFooterBool
     case invalidFooterString
     case invalidFooterInt
+    case invalidHeader
 }
