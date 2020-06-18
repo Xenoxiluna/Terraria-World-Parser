@@ -1,5 +1,5 @@
 //
-//  WorldFile.swift
+//  World.swift
 //  TerrariaWorldParser
 //
 //  Created by Quentin Berry on 4/19/20.
@@ -34,7 +34,9 @@ public class WorldFile{
     public var bottomWorld: Int32 = 0
     public var maxTilesY: Int32 = 0
     public var maxTilesX: Int32 = 0
-    public var expertMode: UInt8 = 0
+    public var gameMode: Int32 = 0
+    public var drunkWorld: Bool = false
+    public var gooWorld: Bool = false
     public var creationTime: Int64 = 0
     public var moonType: UInt8 = 0
     public var treeX: [Int32] = []
@@ -88,25 +90,26 @@ public class WorldFile{
     public var tempRaining: UInt8 = 0
     public var tempRainTime: Int32 = 0
     public var tempMaxRain: Float32 = 0
-    public var oreTier1: Int32 = 0
-    public var oreTier2: Int32 = 0
-    public var oreTier3: Int32 = 0
-    public var setBG0: UInt8 = 0
-    public var setBG1: UInt8 = 0
-    public var setBG2: UInt8 = 0
-    public var setBG3: UInt8 = 0
-    public var setBG4: UInt8 = 0
-    public var setBG5: UInt8 = 0
-    public var setBG6: UInt8 = 0
-    public var setBG7: UInt8 = 0
+    public var oreTierCobalt: Int32 = 0
+    public var oreTierMythril: Int32 = 0
+    public var oreTierAdamantite: Int32 = 0
+    public var treeBG1: UInt8 = 0
+    public var corruptBG: UInt8 = 0
+    public var jungleBG: UInt8 = 0
+    public var snowBG: UInt8 = 0
+    public var hallowBG: UInt8 = 0
+    public var crimsonBG: UInt8 = 0
+    public var desertBG: UInt8 = 0
+    public var oceanBG: UInt8 = 0
     public var cloudBGActive: Int32 = 0
     public var numClouds: Int16 = 0
-    public var windSpeed: Float32 = 0
+    public var windSpeedTarget: Float32 = 0
     public var anglerWhoFinishedToday: [String] = []
     public var savedAngler: UInt8 = 0
     public var anglerQuest: Int32 = 0
     public var savedStylist: UInt8 = 0
     public var savedTaxCollector: UInt8 = 0
+    public var savedGolfer: UInt8 = 0
     public var invasionSizeStart: Int32 = 0
     public var tempCultistDelay: Int32 = 0
     public var killCount: [Int32] = []
@@ -141,7 +144,29 @@ public class WorldFile{
     public var DD2Event_DownedInvasionT1: UInt8 = 0
     public var DD2Event_DownedInvasionT2: UInt8 = 0
     public var DD2Event_DownedInvasionT3: UInt8 = 0
-    
+    public var mushroomBG: UInt8 = 0
+    public var underworldBG: UInt8 = 0
+    public var treeBG2: UInt8 = 0
+    public var treeBG3: UInt8 = 0
+    public var treeBG4: UInt8 = 0
+    public var combatBookWasUsed: Bool = false
+    public var tempLanternNightCooldown: Int32 = 0
+    public var tempLanternNightGenuine: Bool = false
+    public var tempLanternNightManual: Bool = false
+    public var tempLanternNightNextNightIsGenuine: Bool = false
+    public var treeTopVariations: [Int32] = []
+    public var forceHalloweenForToday: Bool = false
+    public var forceXMasForToday: Bool = false
+    public var savedOreTiersCopper: Int32 = 0
+    public var savedOreTiersIron: Int32 = 0
+    public var savedOreTiersSilver: Int32 = 0
+    public var savedOreTiersGold: Int32 = 0
+    public var boughtCat: Bool = false
+    public var boughtDog: Bool = false
+    public var boughtBunny: Bool = false
+    public var downedEmpressOfLight: Bool = false
+    public var downedQueenSlime: Bool = false
+     
     public var tileDataArray: [[Tile]] = []
     public var chestDataArray: [Chest] = []
     public var signDataArray: [Sign] = []
@@ -151,6 +176,7 @@ public class WorldFile{
     public var tileEntitiesNumber: Int32 = 0
     public var tileEntitiesArray: [TileEntity] = []
     public var pressurePlatesArray: [PressurePlate] = []
+    public var powers: [CreativePower: Any] = [CreativePower: Any]()
     
     public init(data: Data) {
         self.data = BinaryReadableData(data: data)
@@ -222,6 +248,24 @@ public class WorldFile{
             throw ParseError.invalidTileDataReadPosition
         }
         
+        if self.version >= 210{
+            try parseBestiary()
+            print("\(self.reader.readIndex)")
+            if (self.pointers[9] != self.reader.readIndex)
+            {
+                throw ParseError.invalidTileDataReadPosition
+            }
+        }
+        
+        if self.version >= 220{
+            try parseCreativePowers()
+            print("\(self.reader.readIndex)")
+            if (self.pointers[10] != self.reader.readIndex)
+            {
+                throw ParseError.invalidTileDataReadPosition
+            }
+        }
+        
         try parseFooter()
     }
     
@@ -258,8 +302,24 @@ public class WorldFile{
         self.bottomWorld = try reader.readInt32()
         self.maxTilesY = try reader.readInt32()
         self.maxTilesX = try reader.readInt32()
-
-        self.expertMode = try reader.readUInt8()
+        
+        if self.version >= 209{
+            self.gameMode = try reader.readInt32()
+            
+            if self.version >= 222{
+                self.drunkWorld = try reader.readBool()
+            }
+            if self.version >= 227{
+                self.gooWorld = try reader.readBool()
+            }
+        }else{
+            self.gameMode = (self.version < 112) ? 0 : try reader.readBool() ? 1 : 0 // 0 = normal || 1 = expert mode
+            if try (self.version == 208 && (try reader.readBool()))
+            {
+                self.gameMode = 2
+            }
+        }
+        
         self.creationTime = try reader.readInt64()
         self.moonType = try reader.readUInt8()
 
@@ -332,20 +392,20 @@ public class WorldFile{
         self.tempRaining = try reader.readUInt8()
         self.tempRainTime = try reader.readInt32()
         self.tempMaxRain = try reader.readFloat32()
-        self.oreTier1 = try reader.readInt32()
-        self.oreTier2 = try reader.readInt32()
-        self.oreTier3 = try reader.readInt32()
-        self.setBG0 = try reader.readUInt8()
-        self.setBG1 = try reader.readUInt8()
-        self.setBG2 = try reader.readUInt8()
-        self.setBG3 = try reader.readUInt8()
-        self.setBG4 = try reader.readUInt8()
-        self.setBG5 = try reader.readUInt8()
-        self.setBG6 = try reader.readUInt8()
-        self.setBG7 = try reader.readUInt8()
+        self.oreTierCobalt = try reader.readInt32()
+        self.oreTierMythril = try reader.readInt32()
+        self.oreTierAdamantite = try reader.readInt32()
+        self.treeBG1 = try reader.readUInt8()
+        self.corruptBG = try reader.readUInt8()
+        self.jungleBG = try reader.readUInt8()
+        self.snowBG = try reader.readUInt8()
+        self.hallowBG = try reader.readUInt8()
+        self.crimsonBG = try reader.readUInt8()
+        self.desertBG = try reader.readUInt8()
+        self.oceanBG = try reader.readUInt8()
         self.cloudBGActive = try reader.readInt32()
         self.numClouds = try reader.readInt16()
-        self.windSpeed = try reader.readFloat32()
+        self.windSpeedTarget = try reader.readFloat32()
 
         self.anglerWhoFinishedToday = []
         let anglerCount: Int32 = try reader.readInt32()
@@ -357,6 +417,9 @@ public class WorldFile{
         self.anglerQuest = try reader.readInt32()
         self.savedStylist = try reader.readUInt8()
         self.savedTaxCollector = try reader.readUInt8()
+        if self.version >= 201{
+            self.savedGolfer = try reader.readUInt8()
+        }
         self.invasionSizeStart = try reader.readInt32()
         self.tempCultistDelay = try reader.readInt32()
 
@@ -403,6 +466,56 @@ public class WorldFile{
         self.DD2Event_DownedInvasionT1 = try reader.readUInt8()
         self.DD2Event_DownedInvasionT2 = try reader.readUInt8()
         self.DD2Event_DownedInvasionT3 = try reader.readUInt8()
+        
+        if self.version > 194{
+            self.mushroomBG = try reader.readUInt8()
+        }
+        if self.version >= 215{
+            self.underworldBG = try reader.readUInt8()
+        }
+        if self.version >= 195{
+            self.treeBG2 = try reader.readUInt8()
+            self.treeBG3 = try reader.readUInt8()
+            self.treeBG4 = try reader.readUInt8()
+        }
+        if self.version >= 204{
+            self.combatBookWasUsed = try reader.readBool()
+        }
+        if self.version >= 207{
+            self.tempLanternNightCooldown = try reader.readInt32()
+            self.tempLanternNightGenuine = try reader.readBool()
+            self.tempLanternNightManual = try reader.readBool()
+            self.tempLanternNightNextNightIsGenuine = try reader.readBool()
+        }
+        
+        if self.version >= 211{
+            let numTrees: Int32 = try reader.readInt32()
+            self.treeTopVariations = [Int32](repeating: 0, count: Int(numTrees))
+            for _ in 0..<(Int(numTrees)) {
+                self.treeTopVariations.append(try reader.readInt32())
+            }
+        }
+        
+        if self.version >= 212{
+            self.forceHalloweenForToday = try reader.readBool()
+            self.forceXMasForToday = try reader.readBool()
+        }
+        if self.version >= 216{
+            self.savedOreTiersCopper = try reader.readInt32()
+            self.savedOreTiersIron = try reader.readInt32()
+            self.savedOreTiersSilver = try reader.readInt32()
+            self.savedOreTiersGold = try reader.readInt32()
+        }
+        
+        if self.version >= 217{
+            self.boughtCat = try reader.readBool()
+            self.boughtDog = try reader.readBool()
+            self.boughtBunny = try reader.readBool()
+        }
+        if self.version >= 223{
+            self.downedEmpressOfLight = try reader.readBool()
+            self.downedQueenSlime = try reader.readBool()
+        }
     }
     
     private func parseTileData() throws{
@@ -642,6 +755,13 @@ public class WorldFile{
             
             npc.home = [try reader.readInt32(), try reader.readInt32()]
 
+            if self.version >= 213{
+                if try reader.readBool() == true
+                {
+                    npc.townNpcVariationIndex = try reader.readInt32()
+                }
+            }
+            
             NPCDataArray += [npc]
             
             b = try reader.readUInt8()
@@ -713,6 +833,65 @@ public class WorldFile{
             room._home = [try reader.readInt32(), try reader.readInt32()]
             
             playerRoomArray += [room]
+        }
+    }
+    
+    private func parseBestiary() throws {
+        var bestiary = Bestiary()
+        
+        let totalKills: Int32 = try reader.readInt32()
+        for _ in 0..<totalKills{
+            bestiary.npcKills[try reader.read7BitEncodedString()] = try reader.readInt32()
+        }
+        
+        let totalNear: Int32 = try reader.readInt32()
+        for _ in 0..<totalNear{
+            bestiary.npcNear.append(try reader.read7BitEncodedString())
+        }
+
+        let totalChat: Int32 = try reader.readInt32()
+        for _ in 0..<totalChat{
+            bestiary.npcChat.append(try reader.read7BitEncodedString())
+        }
+    }
+
+    private func parseCreativePowers() throws {
+        while (try reader.readBool())
+        {
+            let powerId = CreativePower.init(rawValue: try reader.readUInt16())!
+
+            switch (powerId){
+            case CreativePower.time_setfrozen:
+                powers[powerId] = try reader.readBool()
+            case CreativePower.godmode:
+                powers[powerId] = try reader.readBool()
+            case CreativePower.time_setspeed:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.rain_setfrozen:
+                powers[powerId] = try reader.readBool()
+            case CreativePower.wind_setfrozen:
+                powers[powerId] = try reader.readBool()
+            case CreativePower.increaseplacementrange:
+                powers[powerId] = try reader.readBool()
+            case CreativePower.setdifficulty:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.biomespread_setfrozen:
+                powers[powerId] = try reader.readBool()
+            case CreativePower.setspawnrate:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.time_setdawn:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.time_setnoon:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.time_setdusk:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.time_setmidnight:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.wind_setstrength:
+                powers[powerId] = try reader.readFloat32()
+            case CreativePower.rain_setstrength:
+                powers[powerId] = try reader.readFloat32()
+            }
         }
     }
     

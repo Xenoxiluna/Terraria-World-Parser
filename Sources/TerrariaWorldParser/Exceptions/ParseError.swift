@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum ParseError: Error{
+enum ParseError: Error{
     case RLECompressionError
     case RLECompressionOutofBounds
     case BitArrayError
@@ -17,4 +17,5 @@ public enum ParseError: Error{
     case invalidFooterBool
     case invalidFooterString
     case invalidFooterInt
+    case invalidHeader
 }
