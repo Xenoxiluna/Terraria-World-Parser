@@ -7,6 +7,7 @@ add_library(TerrariaWorldParser
   Data/Types/FileType.swift
   Data/Types/LiquidType.swift
   Data/Types/TileType.swift
+  Data/Types/CreativePower.swift
   Data/TownManager.swift
   Data/TileEntity.swift
   Data/Chest.swift
@@ -15,6 +16,7 @@ add_library(TerrariaWorldParser
   Data/PressurePlate.swift
   Data/Tile.swift
   Data/Sign.swift
+  Data/Bestiary.swift
   Exceptions/ParseError.swift
   WorldFile.swift)
 target_link_libraries(TerrariaWorldParser PRIVATE
