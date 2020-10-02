@@ -10,7 +10,7 @@ import Foundation
 import SwiftyBytes
 
 public class WorldFile{
-    public let data: BinaryReadableData
+    public let data: BinaryData
     public let reader: BinaryReader
     
     public var version: UInt32 = 0
@@ -179,7 +179,7 @@ public class WorldFile{
     public var powers: [CreativePower: Any] = [CreativePower: Any]()
     
     public init(data: Data) {
-        self.data = BinaryReadableData(data: data)
+        self.data = BinaryData(data: data)
         self.reader = BinaryReader(self.data)
     }
     
@@ -271,10 +271,10 @@ public class WorldFile{
     
     private func parseFileHeader() throws {
         self.version = try reader.readUInt32()
-        self.magicNumber = try reader.readString(7)
+        self.magicNumber = try reader.readUTF8String(7)
         self.fileType = FileType.init(rawValue: try reader.readUInt8())!
         self.revision = try reader.readUInt32()
-        let _ = try reader.readString(7)
+        let _ = try reader.readUTF8String(7)
         self.favorite = try reader.readUInt8()
         self.pointersCount = try reader.readInt16()
         self.pointers = [Int32](repeating: 0, count: Int(self.pointersCount))
@@ -290,8 +290,8 @@ public class WorldFile{
     }
 
     private func parseHeader() throws{
-        self.mapName = try reader.read7BitEncodedString()
-        self.seedText = try reader.read7BitEncodedString()
+        self.mapName = try reader.readVariableLengthString(.utf8)
+        self.seedText = try reader.readVariableLengthString(.utf8)
         
         self.worldGeneratorVersion = try reader.readUInt64()
         self.guid = [UInt8](try reader.read(16))
@@ -410,7 +410,7 @@ public class WorldFile{
         self.anglerWhoFinishedToday = []
         let anglerCount: Int32 = try reader.readInt32()
         for _ in 0..<anglerCount{
-            anglerWhoFinishedToday += [try reader.read7BitEncodedString()]
+            anglerWhoFinishedToday += [try reader.readVariableLengthString(.utf8)]
         }
         
         self.savedAngler = try reader.readUInt8()
@@ -694,7 +694,7 @@ public class WorldFile{
             let chest = Chest(
                 x: try reader.readInt32(), //Int32
                 y: try reader.readInt32(), //Int32
-                name: try reader.read7BitEncodedString() //String
+                name: try reader.readVariableLengthString(.utf8) //String
             )
 
             // read items in chest
@@ -728,7 +728,7 @@ public class WorldFile{
         let totalSigns: Int16 = try reader.readInt16()
 
         for _ in 0..<totalSigns{
-            let text: String = try reader.read7BitEncodedString() //String
+            let text: String = try reader.readVariableLengthString(.utf8) //String
             let x: Int32 = try reader.readInt32()
             let y: Int32 = try reader.readInt32()
             
@@ -743,7 +743,7 @@ public class WorldFile{
             let npc = NPC()
             npc.spriteId = try reader.readInt32()
             
-            npc.name = try reader.read7BitEncodedString()
+            npc.name = try reader.readVariableLengthString(.utf8)
             npc.position = [try reader.readFloat32(), try reader.readFloat32()]
             
             let isHomeless: UInt8 = try reader.readUInt8() //Bool
@@ -841,17 +841,17 @@ public class WorldFile{
         
         let totalKills: Int32 = try reader.readInt32()
         for _ in 0..<totalKills{
-            bestiary.npcKills[try reader.read7BitEncodedString()] = try reader.readInt32()
+            bestiary.npcKills[try reader.readVariableLengthString(.utf8)] = try reader.readInt32()
         }
         
         let totalNear: Int32 = try reader.readInt32()
         for _ in 0..<totalNear{
-            bestiary.npcNear.append(try reader.read7BitEncodedString())
+            bestiary.npcNear.append(try reader.readVariableLengthString(.utf8))
         }
 
         let totalChat: Int32 = try reader.readInt32()
         for _ in 0..<totalChat{
-            bestiary.npcChat.append(try reader.read7BitEncodedString())
+            bestiary.npcChat.append(try reader.readVariableLengthString(.utf8))
         }
     }
 
@@ -902,7 +902,7 @@ public class WorldFile{
             throw ParseError.invalidFooterBool
         }
 
-        let string: String = try reader.read7BitEncodedString()
+        let string: String = try reader.readVariableLengthString(.utf8)
         print("\(string)")
         if (string != mapName){
             throw ParseError.invalidFooterString
