@@ -12,6 +12,7 @@ import SwiftyBytes
 public class WorldFile{
     public let data: BinaryData
     public let reader: BinaryReader
+    public let writer: BinaryWriter = BinaryWriter()
     
     public var version: UInt32 = 0
     public var magicNumber: String = ""
@@ -269,6 +270,48 @@ public class WorldFile{
         try parseFooter()
     }
     
+    public func saveWorldFile() throws {
+        try saveFileHeader()
+        self.pointers[0] = (Int32)(self.writer.writeIndex)
+        
+        try saveHeader()
+        self.pointers[1] = (Int32)(self.writer.writeIndex)
+        
+        try saveTileData()
+        self.pointers[2] = (Int32)(self.writer.writeIndex)
+        
+        try saveChestData()
+        self.pointers[3] = (Int32)(self.writer.writeIndex)
+
+        try saveSignData()
+        self.pointers[4] = (Int32)(self.writer.writeIndex)
+
+        try saveNPCData()
+        try saveMobData()
+        self.pointers[5] = (Int32)(self.writer.writeIndex)
+
+        try saveTileEntities()
+        self.pointers[6] = (Int32)(self.writer.writeIndex)
+
+        try savePressurePlate()
+        self.pointers[7] = (Int32)(self.writer.writeIndex)
+
+        try saveTownManager()
+        self.pointers[8] = (Int32)(self.writer.writeIndex)
+        
+        if self.version >= 210{
+            try saveBestiary()
+            self.pointers[9] = (Int32)(self.writer.writeIndex)
+        }
+        
+        if self.version >= 220{
+            try saveCreativePowers()
+            self.pointers[10] = (Int32)(self.writer.writeIndex)
+        }
+        
+        try saveFooter()
+    }
+    
     private func parseFileHeader() throws {
         self.version = try reader.readUInt32()
         self.magicNumber = try reader.readUTF8String(7)
@@ -287,6 +330,24 @@ public class WorldFile{
         self.importants = [Bool](repeating: false, count: Int(self.importantsCount))
         
         try ReadBitArray()
+    }
+    
+    private func saveFileHeader() throws {
+        let _ = try self.writer.writeUInt32(self.version)
+        let _ = try self.writer.writeString(self.magicNumber, .utf8)
+        let _ = try self.writer.writeUInt8(self.fileType.rawValue)
+        let _ = try self.writer.writeUInt32(self.revision)
+        
+        let _ = try self.writer.writeUInt8(self.favorite)
+        let _ = try self.writer.writeInt16(self.pointersCount)
+
+        // write section pointer placeholders
+        for _ in 0..<self.pointersCount{
+            let _ = try self.writer.writeInt32(0)
+        }
+
+        // write bitpacked tile frame importance
+        try WriteBitArray()
     }
 
     private func parseHeader() throws{
@@ -518,6 +579,10 @@ public class WorldFile{
         }
     }
     
+    private func saveHeader() throws{
+        
+    }
+    
     private func parseTileData() throws{
         var rle: UInt16 = 0
         tileDataArray = Array(repeating: Array(repeating: Tile.init(u: 0), count: Int(maxTilesY)+1), count: Int(maxTilesX))
@@ -543,6 +608,10 @@ public class WorldFile{
                 }
             }
         }
+    }
+    
+    private func saveTileData() throws{
+        
     }
     
     private func DeserializeTileData(rle: inout UInt16) throws -> Tile{
@@ -724,6 +793,10 @@ public class WorldFile{
         }
     }
     
+    private func saveChestData() throws{
+        
+    }
+    
     private func parseSignData() throws{
         let totalSigns: Int16 = try reader.readInt16()
 
@@ -735,6 +808,10 @@ public class WorldFile{
             let sign = Sign(x: x, y: y, text: text)
             signDataArray += [sign]
         }
+    }
+    
+    private func saveSignData() throws{
+        
     }
     
     private func parseNPCData() throws{
@@ -768,6 +845,10 @@ public class WorldFile{
         }
     }
     
+    private func saveNPCData() throws{
+        
+    }
+    
     private func parseMobData() throws {
         print("\(self.reader.readIndex)")
         
@@ -781,6 +862,10 @@ public class WorldFile{
             
             b = try reader.readUInt8()
         }
+    }
+    
+    private func saveMobData() throws{
+        
     }
     
     private func parseTileEntities() throws {
@@ -814,6 +899,10 @@ public class WorldFile{
         }
     }
     
+    private func saveTileEntities() throws{
+        
+    }
+    
     private func parsePressurePlate() throws {
         let count: Int32 = try reader.readInt32()
 
@@ -825,6 +914,10 @@ public class WorldFile{
         }
     }
     
+    private func savePressurePlate() throws{
+        
+    }
+    
     private func parseTownManager() throws{
         let totalRooms: Int32 = try reader.readInt32()
         for _ in 0..<totalRooms{
@@ -834,6 +927,10 @@ public class WorldFile{
             
             playerRoomArray += [room]
         }
+    }
+    
+    private func saveTownManager() throws{
+        
     }
     
     private func parseBestiary() throws {
@@ -853,6 +950,10 @@ public class WorldFile{
         for _ in 0..<totalChat{
             bestiary.npcChat.append(try reader.readVariableLengthString(.utf8))
         }
+    }
+    
+    private func saveBestiary() throws{
+        
     }
 
     private func parseCreativePowers() throws {
@@ -895,6 +996,10 @@ public class WorldFile{
         }
     }
     
+    private func saveCreativePowers() throws{
+        
+    }
+    
     private func parseFooter() throws{
         let b: UInt8 = try reader.readUInt8()
         print("\(b)")
@@ -913,6 +1018,10 @@ public class WorldFile{
         if (i != worldId){
             throw ParseError.invalidFooterInt
         }
+    }
+    
+    private func saveFooter() throws{
+        
     }
     
     private func ReadBitArray() throws{
@@ -943,4 +1052,41 @@ public class WorldFile{
             throw ParseError.BitArrayError
         }
     }
-}
+    
+    private func WriteBitArray() throws{
+        do{
+            // write the bit data length
+            let _ = try writer.writeInt16((Int16)(self.importants.count))
+            
+            var data: UInt8 = 0
+            var bitMask: UInt8 = 1
+            for i in 0..<self.importants.count{
+                
+                // Check if the current value is true, if it is set then set the bit for the current mask in the data byte.
+                if self.importants[i]
+                {
+                    data = (UInt8)(data | bitMask)
+                }
+                
+                // If we read the last bit mask (B1000000 = 0x80 = 128), read the next byte from the stream and start the mask over.
+                // Otherwise, keep incrementing the mask to get the next bit.
+                if bitMask != 128
+                {
+                    bitMask = bitMask << 1
+                }
+                else
+                {
+                    let _ = try writer.writeUInt8(data)
+                    data = 0
+                    bitMask = 1;
+                }
+
+                if bitMask != 1
+                {
+                    let _ = try writer.writeUInt8(data)
+                }
+            }
+        }catch{
+            throw ParseError.BitArrayError
+        }
+    }}
