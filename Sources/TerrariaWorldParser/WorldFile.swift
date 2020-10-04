@@ -580,7 +580,220 @@ public class WorldFile{
     }
     
     private func saveHeader() throws{
+        let _ = try writer.writeVariableLengthString(self.mapName, .utf8)
+        let _ = try writer.writeVariableLengthString(self.seedText, .utf8)
         
+        let _ = try writer.writeUInt64(self.worldGeneratorVersion)
+        let _ = try writer.write(self.guid)
+        let _ = try writer.writeInt32(self.worldId)
+        let _ = try writer.writeInt32(self.leftWorld)
+        let _ = try writer.writeInt32(self.rightWorld)
+        let _ = try writer.writeInt32(self.topWorld)
+        let _ = try writer.writeInt32(self.bottomWorld)
+        let _ = try writer.writeInt32(self.maxTilesY)
+        let _ = try writer.writeInt32(self.maxTilesX)
+        
+        if self.version >= 209{
+            let _ = try writer.writeInt32(self.gameMode)
+            
+            if self.version >= 222{
+                let _ = try writer.writeBool(self.drunkWorld)
+            }
+            if self.version >= 227{
+                let _ = try writer.writeBool(self.gooWorld)
+            }
+        }else{
+            let _ = try writer.writeUInt8((UInt8)(self.gameMode)) // Possible failure
+        }
+        
+        let _ = try writer.writeInt64(self.creationTime)
+        let _ = try writer.writeUInt8(self.moonType)
+
+        let _ = try writer.writeInt32(self.treeX[0])
+        let _ = try writer.writeInt32(self.treeX[1])
+        let _ = try writer.writeInt32(self.treeX[2])
+
+        let _ = try writer.writeInt32(self.treeStyle[0])
+        let _ = try writer.writeInt32(self.treeStyle[1])
+        let _ = try writer.writeInt32(self.treeStyle[2])
+        let _ = try writer.writeInt32(self.treeStyle[3])
+
+        let _ = try writer.writeInt32(self.caveBackX[0])
+        let _ = try writer.writeInt32(self.caveBackX[1])
+        let _ = try writer.writeInt32(self.caveBackX[2])
+
+        let _ = try writer.writeInt32(self.caveBackStyle[0])
+        let _ = try writer.writeInt32(self.caveBackStyle[1])
+        let _ = try writer.writeInt32(self.caveBackStyle[2])
+        let _ = try writer.writeInt32(self.caveBackStyle[3])
+
+        let _ = try writer.writeInt32(self.iceBackStyle)
+        let _ = try writer.writeInt32(self.jungleBackStyle)
+        let _ = try writer.writeInt32(self.hellBackStyle)
+        let _ = try writer.writeInt32(self.spawnTileX)
+        let _ = try writer.writeInt32(self.spawnTileY)
+        let _ = try writer.writeFloat64(self.worldSurface)
+        let _ = try writer.writeFloat64(self.rockLayer)
+        let _ = try writer.writeFloat64(self.tempTime)
+        let _ = try writer.writeUInt8(self.tempDayTime)
+        let _ = try writer.writeInt32(self.tempMoonPhase)
+        let _ = try writer.writeUInt8(self.tempBloodMoon)
+        let _ = try writer.writeUInt8(self.tempEclipse)
+        let _ = try writer.writeInt32(self.dungeonX)
+        let _ = try writer.writeInt32(self.dungeonY)
+        let _ = try writer.writeUInt8(self.crimson)
+        let _ = try writer.writeUInt8(self.downedBoss1)
+        let _ = try writer.writeUInt8(self.downedBoss2)
+        let _ = try writer.writeUInt8(self.downedBoss3)
+        let _ = try writer.writeUInt8(self.downedQueenBee)
+        let _ = try writer.writeUInt8(self.downedMechBoss1)
+        let _ = try writer.writeUInt8(self.downedMechBoss2)
+        let _ = try writer.writeUInt8(self.downedMechBoss3)
+        let _ = try writer.writeUInt8(self.downedMechBossAny)
+        let _ = try writer.writeUInt8(self.downedPlantBoss)
+        let _ = try writer.writeUInt8(self.downedGolemBoss)
+        let _ = try writer.writeUInt8(self.downedSlimeKing)
+        let _ = try writer.writeUInt8(self.savedGoblin)
+        let _ = try writer.writeUInt8(self.savedWizard)
+        let _ = try writer.writeUInt8(self.savedMech)
+        let _ = try writer.writeUInt8(self.downedGoblins)
+        let _ = try writer.writeUInt8(self.downedClown)
+        let _ = try writer.writeUInt8(self.downedFrost)
+        let _ = try writer.writeUInt8(self.downedPirates)
+        let _ = try writer.writeUInt8(self.shadowOrbSmashed)
+        let _ = try writer.writeUInt8(self.spawnMeteor)
+        let _ = try writer.writeUInt8(self.shadowOrbCount)
+        let _ = try writer.writeInt32(self.altarCount)
+        let _ = try writer.writeUInt8(self.hardMode)
+        let _ = try writer.writeInt32(self.invasionDelay)
+        let _ = try writer.writeInt32(self.invasionSize)
+        let _ = try writer.writeInt32(self.invasionType)
+        let _ = try writer.writeFloat64(self.invasionX)
+        let _ = try writer.writeFloat64(self.slimeRainTime)
+        let _ = try writer.writeUInt8(self.sundialCooldown)
+        let _ = try writer.writeUInt8(self.tempRaining)
+        let _ = try writer.writeInt32(self.tempRainTime)
+        let _ = try writer.writeFloat32(self.tempMaxRain)
+        let _ = try writer.writeInt32(self.oreTierCobalt)
+        let _ = try writer.writeInt32(self.oreTierMythril)
+        let _ = try writer.writeInt32(self.oreTierAdamantite)
+        let _ = try writer.writeUInt8(self.treeBG1)
+        let _ = try writer.writeUInt8(self.corruptBG)
+        let _ = try writer.writeUInt8(self.jungleBG)
+        let _ = try writer.writeUInt8(self.snowBG)
+        let _ = try writer.writeUInt8(self.hallowBG)
+        let _ = try writer.writeUInt8(self.crimsonBG)
+        let _ = try writer.writeUInt8(self.desertBG)
+        let _ = try writer.writeUInt8(self.oceanBG)
+        let _ = try writer.writeInt32(self.cloudBGActive)
+        let _ = try writer.writeInt16(self.numClouds)
+        let _ = try writer.writeFloat32(self.windSpeedTarget)
+
+        let _ = try writer.writeInt32((Int32)(anglerWhoFinishedToday.count))
+        for angler in anglerWhoFinishedToday{
+            let _ = try writer.writeVariableLengthString(angler, .utf8)
+        }
+        
+        let _ = try writer.writeUInt8(self.savedAngler)
+        let _ = try writer.writeInt32(self.anglerQuest)
+        let _ = try writer.writeUInt8(self.savedStylist)
+        let _ = try writer.writeUInt8(self.savedTaxCollector)
+        if self.version >= 201{
+            let _ = try writer.writeUInt8(self.savedGolfer)
+        }
+        let _ = try writer.writeInt32(self.invasionSizeStart)
+        let _ = try writer.writeInt32(self.tempCultistDelay)
+
+        let _ = try writer.writeInt16((Int16)(self.killCount.count))
+        for kill in killCount {
+            let _ = try writer.writeInt32(kill)
+        }
+
+        let _ = try writer.writeUInt8(self.fastForwardTime)
+        let _ = try writer.writeUInt8(self.downedFishron)
+        let _ = try writer.writeUInt8(self.downedMartians)
+        let _ = try writer.writeUInt8(self.downedAncientCultist)
+        let _ = try writer.writeUInt8(self.downedMoonlord)
+        let _ = try writer.writeUInt8(self.downedHalloweenKing)
+        let _ = try writer.writeUInt8(self.downedHalloweenTree)
+        let _ = try writer.writeUInt8(self.downedChristmasIceQueen)
+        let _ = try writer.writeUInt8(self.downedChristmasSantank)
+        let _ = try writer.writeUInt8(self.downedChristmasTree)
+        let _ = try writer.writeUInt8(self.downedTowerSolar)
+        let _ = try writer.writeUInt8(self.downedTowerVortex)
+        let _ = try writer.writeUInt8(self.downedTowerNebula)
+        let _ = try writer.writeUInt8(self.downedTowerStardust)
+        let _ = try writer.writeUInt8(self.TowerActiveSolar)
+        let _ = try writer.writeUInt8(self.TowerActiveVortex)
+        let _ = try writer.writeUInt8(self.TowerActiveNebula)
+        let _ = try writer.writeUInt8(self.TowerActiveStardust)
+        let _ = try writer.writeUInt8(self.LunarApocalypseIsUp)
+        let _ = try writer.writeUInt8(self.tempPartyManual)
+        let _ = try writer.writeUInt8(self.tempPartyGenuine)
+        let _ = try writer.writeInt32(self.tempPartyCooldown)
+
+        let _ = try writer.writeInt32((Int32)(self.tempPartyCelebratingNPCs.count))
+        for party in tempPartyCelebratingNPCs {
+            let _ = try writer.writeInt32(party)
+        }
+
+        let _ = try writer.writeUInt8(self.Temp_Sandstorm_Happening)
+        let _ = try writer.writeInt32(self.Temp_Sandstorm_TimeLeft)
+        let _ = try writer.writeFloat32(self.Temp_Sandstorm_Severity)
+        let _ = try writer.writeFloat32(self.Temp_Sandstorm_IntendedSeverity)
+        let _ = try writer.writeUInt8(self.savedBartender)
+        let _ = try writer.writeUInt8(self.DD2Event_DownedInvasionT1)
+        let _ = try writer.writeUInt8(self.DD2Event_DownedInvasionT2)
+        let _ = try writer.writeUInt8(self.DD2Event_DownedInvasionT3)
+        
+        if self.version > 194{
+            let _ = try writer.writeUInt8(self.mushroomBG)
+        }
+        if self.version >= 215{
+            let _ = try writer.writeUInt8(self.underworldBG)
+        }
+        if self.version >= 195{
+            let _ = try writer.writeUInt8(self.treeBG2)
+            let _ = try writer.writeUInt8(self.treeBG3)
+            let _ = try writer.writeUInt8(self.treeBG4)
+        }
+        if self.version >= 204{
+            let _ = try writer.writeBool(self.combatBookWasUsed)
+        }
+        if self.version >= 207{
+            let _ = try writer.writeInt32(self.tempLanternNightCooldown)
+            let _ = try writer.writeBool(self.tempLanternNightGenuine)
+            let _ = try writer.writeBool(self.tempLanternNightManual)
+            let _ = try writer.writeBool(self.tempLanternNightNextNightIsGenuine)
+        }
+        
+        if self.version >= 211{
+            let _ = try writer.writeInt32((Int32)(self.treeTopVariations.count))
+            for tree in treeTopVariations {
+                let _ = try writer.writeInt32(tree)
+            }
+        }
+        
+        if self.version >= 212{
+            let _ = try writer.writeBool(self.forceHalloweenForToday)
+            let _ = try writer.writeBool(self.forceXMasForToday)
+        }
+        if self.version >= 216{
+            let _ = try writer.writeInt32(self.savedOreTiersCopper)
+            let _ = try writer.writeInt32(self.savedOreTiersIron)
+            let _ = try writer.writeInt32(self.savedOreTiersSilver)
+            let _ = try writer.writeInt32(self.savedOreTiersGold)
+        }
+        
+        if self.version >= 217{
+            let _ = try writer.writeBool(self.boughtCat)
+            let _ = try writer.writeBool(self.boughtDog)
+            let _ = try writer.writeBool(self.boughtBunny)
+        }
+        if self.version >= 223{
+            let _ = try writer.writeBool(self.downedEmpressOfLight)
+            let _ = try writer.writeBool(self.downedQueenSlime)
+        }
     }
     
     private func parseTileData() throws{
@@ -611,7 +824,57 @@ public class WorldFile{
     }
     
     private func saveTileData() throws{
-        
+        for x in 0..<Int(self.maxTilesX) {
+            var y: Int = 0
+            while y < self.maxTilesY{
+                let tile: Tile = tileDataArray[x][y]
+                
+                var dataIndex = 0
+                var headerIndex = 0
+                
+                var tileData: [UInt8] = try SerializeTileData(tile, &dataIndex, &headerIndex)
+                var header1: UInt8 = tileData[headerIndex]
+                var rle: UInt16 = 0
+                var nextY: Int = y + 1;
+                var remainingY: Int = (Int)(self.maxTilesY) - y - 1
+                while (remainingY > 0) && (tile == tileDataArray[x][nextY])
+                {
+                    rle = (UInt16)(rle + 1)
+                    remainingY -= 1
+                    nextY += 1
+                }
+
+                y = y + (Int)(rle);
+
+                if (rle > 0)
+                {
+                    dataIndex += 1
+                    tileData[dataIndex] = (UInt8)(rle & 255);
+
+                    if (rle <= 255)
+                    {
+                        // set bit[6] on header1 for byte size rle
+                        header1 = (UInt8)(header1 | 64);
+                    }
+                    else
+                    {
+                        // set bit[7] on header1 for int16 size rle
+                        header1 = (UInt8)(header1 | 128);
+
+                        // get upper portion of int16 and place in tiledata
+                        dataIndex += 1
+                        tileData[dataIndex] = (UInt8)((rle & 65280) >> 8);
+                    }
+                }
+
+                tileData[headerIndex] = header1;
+                // end rle compression
+                
+                let _ = try writer.write(tileData)
+                let _ = try writer.writeInt32((Int32)(headerIndex))
+                let _ = try writer.writeInt32((Int32)(dataIndex - headerIndex))
+            }
+        }
     }
     
     private func DeserializeTileData(rle: inout UInt16) throws -> Tile{
@@ -740,6 +1003,10 @@ public class WorldFile{
                 throw ParseError.RLECompressionError
         }
         return tile
+    }
+    
+    private func SerializeTileData(_ tile: Tile, _ dataIndex: inout Int, _ headerIndex: inout Int) throws -> [UInt8] {
+        return [0,0]
     }
     
     private func parseChestData() throws {
