@@ -2,6 +2,7 @@
 Terraria 1.4.0.5 world parser in the Swift programing language
 
 #### NOTE: Only Terraria 1.3.5.3 -1.4.0.5 is supported!
+#### NOTE 2: Saving the edited world is not yet supported but will be soon.
 
 ## Usage
 This is a swift package. Add as a dependency in your project to use it. There is an experimental windows version available in the windows branch.
@@ -22,7 +23,7 @@ try world.parseWorldFile()
 
 ## Dependencies
 
-- [SwiftyBytes 0.2.1](https://github.com/Xenoxiluna/SwiftyBytes)
+- [SwiftyBytes 0.4.5](https://github.com/Xenoxiluna/SwiftyBytes)
 
 ## References
 
